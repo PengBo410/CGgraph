@@ -17,7 +17,7 @@
 
 void main_partition()
 {
-    std::string graphName = "";//gsh2015tpd	
+    std::string graphName = "";
 	OrderMethod orderMethod = OrderMethod::NATIVE; 
 	int64_t root = 0; 
 	count_type runs = 1;
@@ -34,7 +34,7 @@ void main_partition()
 	if(graphName.length() >= 3 && graphName.substr(0,3).compare("toy") == 0) toyExample = true;
 	else  toyExample = false;	
 
-	setLogNFS("log.txt", true);//日志
+	setLogNFS("log.txt", true);
 	assert_msg(sizeof(size_t) == 8, "CGgraph Need 64-bits Platform");
 	CPUInfo cpuInfo;
 	cpuInfo.print();
@@ -132,7 +132,7 @@ void main_partition()
 						countl_type degreeSize = csrResult.csr_offset[i + 1] - csrResult.csr_offset[i];
 						assert_msg(degreeSize == 0, "degreeSize != 0, vertexId = %zu, degreeSize = %zu", static_cast<uint64_t>(i), static_cast<uint64_t>(degreeSize));
 					}
-					Msg_check("RCM_LAST_ZERO_OUTDEGREE checked！");
+					Msg_check("RCM_LAST_ZERO_OUTDEGREE checked!");
 				}
 			}
 		}
@@ -187,7 +187,7 @@ void main_partition()
 			
 			for (count_type runId = 0; runId < runs; runId++)
 			{
-				logstream(LOG_INFO) << "==========================第 【" << (runId + 1) << "】 次Run==========================" << std::endl;
+				logstream(LOG_INFO) << "==========================【" << (runId + 1) << "】 Run==========================" << std::endl;
 
 				usingTime_vec[runId] = CGgraphEngine_->CG_co_execution(switch_root);
 
