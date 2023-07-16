@@ -71,14 +71,10 @@ public:
 	
 	inline timer() { start(); }
 
-	/**
-	 * 重置计时器
-	 */
+
 	inline void start() { gettimeofday(&start_time_, NULL); }
 
-	/**
-	  返回从start()开始经过的时间，以秒为单位
-	 */
+
 	inline double current_time() const {
 		timeval current_time;
 		gettimeofday(&current_time, NULL);
@@ -97,9 +93,7 @@ public:
 		return current_time;
 	}
 
-	/**
-	 *以毫秒为单位
-	 */
+
 	inline double current_time_millis() const { return current_time() * 1000; }
 	inline double get_time_ms() const { return current_time() * 1000; }
 	inline double get_time() const { return current_time(); }
@@ -116,11 +110,7 @@ public:
 		return answer;
 	} // end of sec_of_day
 
-	/**
-	 * \brief Returns only the micro-second component of the
-	 * time since the Unix Epoch.
-	   微秒时间
-	 */
+
 	static size_t usec_of_day() {
 		timeval current_time;
 		gettimeofday(&current_time, NULL);
@@ -129,14 +119,11 @@ public:
 		return answer;
 	} // end of usec_of_day
 
-	/**
-	 * 返回程序启动后的时间。此值仅每100ms更新一次，因此近似(但快)。
-	 */
+
 	 /**
 	  * Precision of deciseconds
 	  */
 	float approx_time_seconds() {
-		printf("[approx_time_seconds]暂时没有定义！\n");
 		return 0;
 		// float(hmstimer.ctr) / 10;
 	}
@@ -145,14 +132,11 @@ public:
 	 * Precision of deciseconds
 	 */
 	size_t approx_time_millis() {
-		printf("[approx_time_millis]暂时没有定义！\n");
 		return 0;
 		//return hmstimer.ctr * 100;
 	}
 
-	/**
-	 * 以秒为单位
-	 */
+
 #ifdef __GNUC__
 	static void sleep(size_t sleeplen)
 	{
@@ -164,9 +148,7 @@ public:
 #endif
 	
 
-	/**
-	 * 以毫秒为单位
-	 */
+
 #ifdef __GNUC__
 	static void sleep_ms(size_t sleeplen)
 	{
@@ -218,14 +200,14 @@ public:
 
 unsigned long long estimate_ticks_per_second();
 
-#if defined(__i386__)                            //32位微处理器的统称
+#if defined(__i386__)                           
 static inline unsigned long long rdtsc(void)
 {
 	unsigned long long int x;
 	__asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
 	return x;
 }
-#elif defined(__x86_64__)                      //x86架构的bai64位拓展，向后兼容于16位及32位的x86架构
+#elif defined(__x86_64__)                     
 static inline unsigned long long rdtsc(void)
 {
 	unsigned hi, lo;
@@ -239,17 +221,6 @@ static inline unsigned long long rdtsc(void) {
 #endif
 
 
-//} // end of GY namespace
-
-/**
- * 对<<的重写。调用"cout << ti"，其中ti是一个计时器对象，
- * 它将打印自ti.start()被调用以来经过的秒数。
- */
-
-//对于<<符号的重写
-//std::ostream& operator<<(std::ostream& out, /*const GY::*/timer& t) {
-//	return out << t.current_time();
-//}
 
 
 #endif // !CPJ_TIME_HPP

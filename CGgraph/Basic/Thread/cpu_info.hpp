@@ -7,14 +7,7 @@
 #include <assert.h>
 #include <numa.h>
 
-//using namespace std; // 前往注意不要使用这种写法, 否则在用CUB时会报错, 将string写为std::string
 
-
-/**
- *  用法：
- *     CPUInfo cpuinfo;
- * 	   cpuinfo.print();
- */
 
 
 class CPUInfo {
@@ -51,34 +44,34 @@ public:
 private:
 	void readCpuInfo(std::string inputFile = "/proc/cpuinfo")
 	{
-		std::vector<std::vector<int>> coreId_threadId; // coreId与threadId的对应关系 
+		std::vector<std::vector<int>> coreId_threadId; 
 
 		std::vector<std::vector<std::string>> file2vector;
 
 
 
 
-		std::ifstream in_file(inputFile.c_str(), std::ios_base::in);//以二进制读的方式打开,并写入内存
+		std::ifstream in_file(inputFile.c_str(), std::ios_base::in);
 		if (!in_file.good()) {
 			std::cout << "[readCpuInfo]Error opening in-file: " << inputFile << std::endl;
 			assert(false);
 		}
 
-		//将文件输出到vector
+		
 		std::string lineString;
 		std::vector<std::string> temp;
 		while (in_file.good() && !in_file.eof()) {
 
 			std::getline(in_file, lineString);
 
-			//用空行来划分
-			if (!lineString.empty()) //不为空行
+			
+			if (!lineString.empty()) 
 			{
 				temp.push_back(lineString);
 			}
 			else
 			{
-				if (temp.size() != 0) //避免文件的最后一个空行
+				if (temp.size() != 0) 
 				{
 					file2vector.push_back(temp);
 					temp.clear();
@@ -89,7 +82,7 @@ private:
 
 		in_file.close();
 
-		//依次解析
+		
 		for (size_t blockId = 0; blockId < file2vector.size(); blockId++)
 		{
 			std::vector<std::string> block = file2vector[blockId];
@@ -112,7 +105,7 @@ private:
 		}
 
 		
-		//构建关系
+		
 		assert(socketId_vec.size() == coreId_vec.size());
 		assert(socketId_vec.size() == threadId_vec.size());
 
@@ -126,7 +119,7 @@ private:
 			util_vec.push_back(util);
 		}
 
-		//排序
+		
 		sort(util_vec.begin(), util_vec.end(),
 			[](const Util& a, const Util& b)
 			{
@@ -163,7 +156,7 @@ private:
 			});
 
 
-		//准备输出变量
+		
 		std::vector <int> socketId_vec_temp;
 		std::vector <int> coreId_vec_temp;
 		std::vector <int> threadId_vec_temp;
@@ -187,7 +180,7 @@ private:
 
 
 
-		//构建三维socketId_coreId_threadId vector 的coreId长度
+		//socketId_coreId_threadId vector 的coreId长度
 		//socketId_coreId_threadId.resize(max_socketId + 1);
 		//int p = util_vec[0].socketId_;
 		//int maxCoreId_ofEachSocket = 1;
@@ -246,7 +239,7 @@ private:
 			int index = line.find_last_of(": ");
 			if (index != -1)
 			{
-				std::string value = line.substr(index);   //截取s中从从pos开始（包括0）到末尾的所有字符的子串，并返回
+				std::string value = line.substr(index);   
 				pro = atoi(value.c_str());
 			}
 		}
@@ -256,14 +249,14 @@ private:
 	int parsePhysicalCore(std::string line)
 	{
 		int core = -1;
-		//寻找physical core，也就是coreNum
+		
 		if (line.find("core id", 0) != std::string::npos)
 		{
 			//寻找 ": "
 			int index = line.find_last_of(": ");
 			if (index != -1)
 			{
-				std::string value = line.substr(index);   //截取s中从从pos开始（包括0）到末尾的所有字符的子串，并返回
+				std::string value = line.substr(index);  
 				core = atoi(value.c_str());
 			}
 		}
@@ -273,14 +266,14 @@ private:
 	int parseSocketId(std::string line)
 	{
 		int socketId = -1;
-		//寻找physical core，也就是coreNum
+		
 		if (line.find("physical id", 0) != std::string::npos)
 		{
-			//寻找 ": "
+			
 			int index = line.find_last_of(": ");
 			if (index != -1)
 			{
-				std::string value = line.substr(index);   //截取s中从从pos开始（包括0）到末尾的所有字符的子串，并返回
+				std::string value = line.substr(index);   
 				socketId = atoi(value.c_str());
 			}
 		}
@@ -333,33 +326,6 @@ public:
 			Util util = util_vec[i];
 			printf("%zu: socket{%d} - core[%d] - threadId(%d)\n", i, util.socketId_, util.coreId_, util.threadId_);
 		}
-	}
-
-/*
-	void openHybirdThread()
-	{
-		std::string shStr = "sudo bash " + std::string(PROJECT_PATH) + "/src/src/basic/util/thread/HybirdThread.sh" + " e";
-		std::cout << "1. 打开服务器的终端；\n"
-			<< "2. 执行：" << shStr << "\n" 
-			<< "3. 再此运行程序；"<< std::endl;
-		exit(0);
-		//system(shStr.c_str());
-	}
-
-	void closeHybirdThread()
-	{
-		std::string shStr = "sudo bash " + std::string(PROJECT_PATH) + "/src/src/basic/util/thread/HybirdThread.sh" + " d";
-		std::cout << "1. 打开服务器的终端；\n"
-			<< "2. 执行：" << shStr << "\n"
-			<< "3. 再此运行程序；" << std::endl;
-		exit(0);
-		//system(shStr.c_str());
-	}
-*/
-	/*int getSocketNum()
-	{
-		int sockets = numa_num_configured_nodes();
-		return sockets;
-	}*/
+	
 
 };

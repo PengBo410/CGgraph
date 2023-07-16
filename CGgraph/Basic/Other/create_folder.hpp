@@ -10,10 +10,9 @@
 #include <iostream>
 #include <direct.h> //_mkdir
 
-	//注意：path必须以"/"结尾，如：const char* path = "C:\\Users\\yyj\\Desktop\\vs_log\\"
+
 	bool createFloder(const char* path) {
 
-		// >= 0 说明目录存在，小于0不存在
 		if (_access(path, 0) < 0) {
 
 			int isCreate = _mkdir(path);
@@ -45,10 +44,10 @@
 #include <unistd.h> //access
 #include <iostream>
 
-    //注意：path必须以"/"结尾，如：const char* path = "logger/"
+    
 	bool createFloder(const char* path)
 	{
-		// >= 0 说明目录存在，小于0不存在。 
+		 
 		if (access(path, F_OK) < 0)
 		{
 			int isCreate = mkdir(path, S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
@@ -64,7 +63,7 @@
 				return false;
 			}				
 		}
-        //如果已经存在则不在做出任何操作
+        
 		else
 		{
 			//printf("[%s] floder is already existed \n", path);

@@ -2,7 +2,6 @@
 
 
 #include "../Other/IO.hpp"
-//#include "../Thread/atomic_basic.hpp"
 #include "../Console/console.hpp"
 #include <tbb/concurrent_vector.h>
 
@@ -416,9 +415,7 @@ public:
 
 
 
-	//===========================================================================
-	//                                  [常用的函数]
-	//===========================================================================
+	
 	void getStruct_csrResult(CSR_Result_type& csrResult)
 	{
 		build_csr();

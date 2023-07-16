@@ -61,12 +61,12 @@ enum OrderMethod {
 	UnDirected_RCM,
 	UnDirected_RCM_LAST_ZERO_OUTDEGREE,
 
-	//??????outDegree??????
+
 	MY_BFS_OUT,
 	MY_BFS_IN,
 	MY_BFS_OUT_IN,
 
-	//??????inDegree??????
+
 	MY_IMAX_BFS_OUT,
 	MY_IMAX_BFS_IN,
 
@@ -76,7 +76,7 @@ enum OrderMethod {
 
 
 /****************************************************************************
- *                              [Degree ≈≈–Ú]
+ *                              [Degree ]
  ****************************************************************************/
 enum SortDegree {
 	OUTDEGREE,
@@ -132,8 +132,6 @@ enum RATE_Type {
 struct Adaptive_info_type
 {
 	RATE_Type rate_type;
-	//std::string graphName = "";
-	//std::string algorithm = "";
 	size_t ite = 0; 
 	size_t vertexNum_workload = 0; 
 	size_t edgeNum_workload = 0; 
@@ -173,7 +171,7 @@ enum Engine_type  {
 	BLOCK_2D,
 
 	//Other Compute
-	COMPUTE_INDEGREE, // Use CSR Compute Indgree
+	COMPUTE_INDEGREE,
 	REORDER,
 	ACTIVEBLOCK
 	

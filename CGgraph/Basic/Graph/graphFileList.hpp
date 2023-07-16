@@ -5,7 +5,7 @@
 #include "basic_struct.hpp"
 #include "../Console/console.hpp"
 
-std::string BASE_GRAPHFILE_PATH = "/home/pengjie/graph_data/";
+std::string BASE_GRAPHFILE_PATH = "...";
 
 
 GraphFile_type getGraphFile(std::string graphName, OrderMethod orderMethod = OrderMethod::NATIVE)
@@ -22,82 +22,81 @@ GraphFile_type getGraphFile(std::string graphName, OrderMethod orderMethod = Ord
 
 		if (orderMethod == OrderMethod::NATIVE)
 		{
-			graphFile.graphFile = "/home/omnisky/inputFile/cushaSsspInput_u32_u32.bin";			
+			graphFile.graphFile = "...";			
 			graphFile.common_root = 0;
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrOffset_u32.bin";
-			graphFile.csrDestFile =   BASE_GRAPHFILE_PATH + graphName + "/native_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile =   BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
         else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
 		{
-			graphFile.graphFile =     BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile =   BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_addition.txt";
+			graphFile.graphFile =     BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile =   BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			graphFile.common_root = 3;// 0 -> 3
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile =   BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile =   BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
 		else if (orderMethod == OrderMethod::RCM_INDEGREE)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCMIndegree_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCMIndegree_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/RCMIndegree_LAST_ZERO_OUTDEGREE_addition.txt";
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			graphFile.common_root = 0;//?
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCMIndegree_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCMIndegree_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCMIndegree_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
 		else if (orderMethod == OrderMethod::RCM_OUTDEGREE)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCMOutdegree_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCMOutdegree_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/RCMOutdegree_LAST_ZERO_OUTDEGREE_addition.txt";
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			graphFile.common_root = 0;// ?
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCMOutdegree_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCMOutdegree_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCMOutdegree_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
 		else if (orderMethod == OrderMethod::NORMAL_OUTDEGREE_DEC)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_addition.txt";
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			graphFile.common_root = 0; // ?
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
 		else if (orderMethod == OrderMethod::MY_BFS_OUT)
 		{
-			//graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_addition.txt";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			graphFile.common_root = 0; // ?
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
@@ -120,57 +119,81 @@ GraphFile_type getGraphFile(std::string graphName, OrderMethod orderMethod = Ord
 
 		if (orderMethod == OrderMethod::NATIVE)
 		{
-			graphFile.graphFile = "/data/webgraph/bin/enwiki-2013-uint32t.bin";		
+			graphFile.graphFile = "...";
 			graphFile.common_root = 0;
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrOffset_u32.bin";
-			graphFile.csrDestFile =   BASE_GRAPHFILE_PATH + graphName + "/native_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
-        else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
+		else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_addition.txt";
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
-			graphFile.common_root = 441042;// 0 -> 441042 
+			graphFile.common_root = 3;// 0 -> 3
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
-        else if (orderMethod == OrderMethod::RCM)
+		else if (orderMethod == OrderMethod::RCM_INDEGREE)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_old2new.txt";
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrWeight_u32.bin";
+			graphFile.common_root = 0;//?
 
-			graphFile.common_root = 379625;
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
-        else if (orderMethod == OrderMethod::OUTDEGREE_NODE)
+		else if (orderMethod == OrderMethod::RCM_OUTDEGREE)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_node_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_node_old2new.txt";
-			graphFile.common_root = 7891;
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0;// ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
-        else if (orderMethod == OrderMethod::OUTDEGREE_NODE_dec)
+		else if (orderMethod == OrderMethod::NORMAL_OUTDEGREE_DEC)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_nodeDec_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_nodeDec_old2new.txt";
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
-			graphFile.common_root = 0;
-			Msg_info("common_root 需要更新");
+			graphFile.common_root = 0; // ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::MY_BFS_OUT)
+		{
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0; // ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
@@ -198,127 +221,81 @@ GraphFile_type getGraphFile(std::string graphName, OrderMethod orderMethod = Ord
 
 		if (orderMethod == OrderMethod::NATIVE)
 		{
-			graphFile.graphFile = "/data/webgraph/2021-6-2/twitter2010_hasEdge_uint32t.bin";
-			graphFile.common_root = 892741;
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-        else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_addition.txt";// 21475137 (34.87%)
-
-			graphFile.common_root = 34367363;// old-root: 892741, new-root: 34367363
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-        else if (orderMethod == OrderMethod::RCM)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_old2new.txt";
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrWeight_u32.bin";
-
-			graphFile.common_root = 40582822;
-
-			return graphFile;
-		}
-		else if (orderMethod == OrderMethod::OUTDEGREE_NODE)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_node_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_node_old2new.txt";
-			graphFile.common_root = 60959618;
-
-			return graphFile;
-		}
-        else if (orderMethod == OrderMethod::OUTDEGREE_NODE_dec)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_nodeDec_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_nodeDec_old2new.txt";
-
+			graphFile.graphFile = "...";
 			graphFile.common_root = 0;
-			graphFile.common_root = 616395;
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 3;// 0 -> 3
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::RCM_INDEGREE)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0;//?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::RCM_OUTDEGREE)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0;// ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::NORMAL_OUTDEGREE_DEC)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0; // ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
 		else if (orderMethod == OrderMethod::MY_BFS_OUT)
 		{
-			//graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_addition.txt";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			graphFile.common_root = 0; // ?
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-		else if (orderMethod == OrderMethod::MY_BFS_IN)
-		{
-			//graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_IN_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_IN_addition.txt";
-
-			graphFile.common_root = 0; // ?
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_IN_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_IN_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_IN_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-		else if (orderMethod == OrderMethod::MY_BFS_OUT_IN)
-		{
-			//graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_IN_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_IN_addition.txt";
-
-			graphFile.common_root = 0; // ?
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_IN_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_IN_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/MY_BFS_OUT_IN_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-		else if (orderMethod == OrderMethod::MY_IMAX_BFS_IN)
-		{
-			//graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/MY_IMAX_BFS_IN_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/MY_IMAX_BFS_IN_addition.txt";
-
-			graphFile.common_root = 0; // ?
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/MY_IMAX_BFS_IN_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/MY_IMAX_BFS_IN_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/MY_IMAX_BFS_IN_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-		else if (orderMethod == OrderMethod::IN_DEGREE_DEC)
-		{
-			//graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/NORMAL_OUTDEGREE_DEC_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/IN_DEGREE_DEC_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/IN_DEGREE_DEC_addition.txt";
-
-			graphFile.common_root = 0; // ?
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/IN_DEGREE_DEC_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/IN_DEGREE_DEC_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/IN_DEGREE_DEC_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
@@ -340,36 +317,83 @@ GraphFile_type getGraphFile(std::string graphName, OrderMethod orderMethod = Ord
 
 		if (orderMethod == OrderMethod::NATIVE)
 		{
-			graphFile.graphFile = "/data/webgraph/bin/friendster/native_bin.txt";
-			graphFile.common_root = 25689;
+			graphFile.graphFile = "...";
+			graphFile.common_root = 0;
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
 		else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
 		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_addition.txt";
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
-			graphFile.common_root = 0;// old-root: 892741, new-root: 34367363
+			graphFile.common_root = 3;// 0 -> 3
 
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
-		else if (orderMethod == OrderMethod::OUTDEGREE_NODE)
+		else if (orderMethod == OrderMethod::RCM_INDEGREE)
 		{
-			/*graphFile.graphFile = "/data/webgraph/bin/" + graphName + "/outDegree_node_bin.txt";
-			graphFile.old2newFile = "/data/webgraph/bin/" + graphName + "/outDegree_node_old2new.txt";
-			graphFile.common_root = 60959618;
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
-			return graphFile;*/
+			graphFile.common_root = 0;//?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::RCM_OUTDEGREE)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0;// ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::NORMAL_OUTDEGREE_DEC)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0; // ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::MY_BFS_OUT)
+		{
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0; // ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
 		}
 		else
 		{
@@ -390,62 +414,86 @@ GraphFile_type getGraphFile(std::string graphName, OrderMethod orderMethod = Ord
 
 		if (orderMethod == OrderMethod::NATIVE)
 		{
-			graphFile.graphFile = "/home/pengjie/graph_data/uk-union/uk-union_u32_reGen.bin";
-			graphFile.common_root = 0; //todo
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/native_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-        else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_old2new.txt";
-			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_addition.txt";// 21475137 (34.87%)
-
-			graphFile.common_root = 34367363;// old-root: 892741, new-root: 34367363
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_LAST_ZERO_OUTDEGREE_csrWeight_u32.bin";
-
-			return graphFile;
-		}
-        else if (orderMethod == OrderMethod::RCM)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_old2new.txt";
-
-			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrOffset_u32.bin";
-			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrDest_u32.bin";
-			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "/RCM_csrWeight_u32.bin";
-
-			graphFile.common_root = 40582822;
-
-			return graphFile;
-		}
-		else if (orderMethod == OrderMethod::OUTDEGREE_NODE)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_node_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_node_old2new.txt";
-			graphFile.common_root = 60959618;
-
-			return graphFile;
-		}
-        else if (orderMethod == OrderMethod::OUTDEGREE_NODE_dec)
-		{
-			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_nodeDec_bin.txt";
-			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "/outDegree_nodeDec_old2new.txt";
-
+			graphFile.graphFile = "...";
 			graphFile.common_root = 0;
-			graphFile.common_root = 616395;
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::RCM_LAST_ZERO_OUTDEGREE)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 3;// 0 -> 3
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::RCM_INDEGREE)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0;//?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::RCM_OUTDEGREE)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0;// ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::NORMAL_OUTDEGREE_DEC)
+		{
+			graphFile.graphFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0; // ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			return graphFile;
+		}
+		else if (orderMethod == OrderMethod::MY_BFS_OUT)
+		{
+			graphFile.old2newFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.addtitionFile = BASE_GRAPHFILE_PATH + graphName + "...";
+
+			graphFile.common_root = 0; // ?
+
+			graphFile.csrOffsetFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrDestFile = BASE_GRAPHFILE_PATH + graphName + "...";
+			graphFile.csrWeightFile = BASE_GRAPHFILE_PATH + graphName + "...";
 
 			return graphFile;
 		}
         
-    }// end of [twitter2010]
+    }
 
 	else
 	{

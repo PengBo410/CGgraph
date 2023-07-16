@@ -1,26 +1,7 @@
 #pragma once
 
 
-/* **********************************************************************************************
- * 我们在Window平台中采用c++17中的原子操作
- * c++17中的原子类型支持的格式：
- * using atomic_bool = atomic<bool>;
- * using atomic_char   = atomic<char>;
- * using atomic_schar  = atomic<signed char>;
- * using atomic_uchar  = atomic<unsigned char>;
- * using atomic_short  = atomic<short>;
- * using atomic_ushort = atomic<unsigned short>;
- * using atomic_int    = atomic<int>;
- * using atomic_uint   = atomic<unsigned int>;
- * using atomic_long   = atomic<long>;
- * using atomic_ulong  = atomic<unsigned long>;
- * using atomic_llong  = atomic<long long>;
- * using atomic_ullong = atomic<unsigned long long>;
- * 
- * 形如：atomic_float, atomic_double 在c++17中需要通过std::atomic_compare_exchange_weak实现
- *      据说c++20中会添加，暂时没有测试。
- *      add_fetch 在c++20中
- * ***********************************************************************************************/
+
 
 #include <type_traits>
 #include <cstdint>

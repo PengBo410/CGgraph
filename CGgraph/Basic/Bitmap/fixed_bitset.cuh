@@ -23,14 +23,12 @@ typedef uint64_t bit_type;
 class Fixed_Bitset{
 
 public:
-    bit_type* array;//数组
-    bit_type len;// 想要申请的len
-    bit_type arrlen;// 数组的长度
+    bit_type* array;
+    bit_type len;
+    bit_type arrlen;
 
 
-    /* ***************************************************************************************************************************
-     *                                            构造函数、析构函数与操作符                                                         *                                                    *
-     * ***************************************************************************************************************************/
+    
 
     //Fixed_Bitset(): array(NULL), len(0), arrlen(0) {}
 
@@ -53,7 +51,6 @@ public:
 
     /* ***************************************************************************************************************************
      *                                              Common Function
-     * Func: fix_trailing_bits() 这会将块最后一位之后的剩余部分归零
      * ***************************************************************************************************************************/
     void fix_trailing_bits() {
         bit_type lastbits = BIT_MOD(len);
@@ -76,12 +73,12 @@ public:
         parallel_clear();
     }
 
-    // 返回bitset的bit位数，即：len
+
     inline bit_type size() const {
         return len;
     }
 
-    // 判断是否所有的bit位都为0
+ 
     inline bool empty() const {
         for (bit_type i = 0; i < arrlen; ++i) if (array[i]) return false;
         return true;
@@ -121,12 +118,12 @@ public:
     }
 
     inline void fill() {
-        for (bit_type i = 0; i < arrlen; ++i) array[i] = (bit_type)-1;//将-1强转为size_t，也就是64个1，对应的十进制为：18446744073709551615
+        for (bit_type i = 0; i < arrlen; ++i) array[i] = (bit_type)-1;
         fix_trailing_bits();
     }
 
     inline void parallel_fill() {
-        omp_parallel_for (bit_type i = 0; i < arrlen; ++i) array[i] = (bit_type)-1;//将-1强转为size_t，也就是64个1，对应的十进制为：18446744073709551615
+        omp_parallel_for (bit_type i = 0; i < arrlen; ++i) array[i] = (bit_type)-1;
         fix_trailing_bits();
     }
 
@@ -137,7 +134,6 @@ public:
     inline bool get(bit_type b) const {
         bit_type arrpos, bitpos;
         bit_to_pos(b, arrpos, bitpos);
-        //(size_t(1) << size_t(bitpos))保证了第b位一定为1，所以原数据array[arrpos]中，若第b位为1则&的结果为1,返回true，否则为0，返回false；
         return array[arrpos] & (bit_type(1) << bit_type(bitpos));
     }
 
@@ -146,15 +142,14 @@ public:
         bit_type arrpos, bitpos;
         bit_to_pos(b, arrpos, bitpos);
         const bit_type mask(bit_type(1) << bit_type(bitpos));
-        //OR是或运算，A OR B的结果：当A、duB中只要有一个或者两个都为1时，结果果为1，否则为0；
-        return __sync_fetch_and_or(array + arrpos, mask) & mask;//GCC里面的函数
+        return __sync_fetch_and_or(array + arrpos, mask) & mask;//GCC
     }
 
      inline bool set_bit_unsync(bit_type b) {
         bit_type arrpos, bitpos;
         bit_to_pos(b, arrpos, bitpos);
         const bit_type mask(bit_type(1) << bit_type(bitpos));
-        bool ret = array[arrpos] & mask;//TODO：为什么相对于set_bit()是先&，在|=
+        bool ret = array[arrpos] & mask;/
         array[arrpos] |= mask;
         return ret;
     }
@@ -179,24 +174,21 @@ public:
         return ret;
     }
 
-    // 将setbit的b位设置为新值[value]，并返回旧值。是线程安全的
     inline bool set(bit_type b, bool value) {
         if (value) return set_bit(b);
         else return clear_bit(b);
     }
 
-    // 将setbit的b位设置为新值[value]，并返回旧值。不同于set()的是，此方法不使用原子操作，因此更快，但不够安全（可能存在多线程修改）
     inline bool set_unsync(bit_type b, bool value) {
         if (value) return set_bit_unsync(b);
         else return clear_bit_unsync(b);
     }
 
-    // array中所有为1的总数
     bit_type popcount() const {
         bit_type ret = 0;
         for (bit_type i = 0; i < arrlen; ++i) {
-            //参考资料：https://blog.csdn.net/gaochao1900/article/details/5646211 (VC上也可以实现__builtin_popcountl)
-            ret += __builtin_popcountl(array[i]);//计算一个 64 位无符号整数有多少个位为1（_builtin_popcount()是计算32位的）
+            //：https://blog.csdn.net/gaochao1900/article/details/5646211 
+            ret += __builtin_popcountl(array[i]);
         }
         return ret;
     }
@@ -205,14 +197,12 @@ public:
         bit_type ret = 0;
         #pragma omp parallel for reduction(+: ret)
         for (bit_type i = 0; i < arrlen; ++i) {
-            //参考资料：https://blog.csdn.net/gaochao1900/article/details/5646211 (VC上也可以实现__builtin_popcountl)
-            ret += __builtin_popcountl(array[i]);//计算一个 64 位无符号整数有多少个位为1（_builtin_popcount()是计算32位的）
+            /：https://blog.csdn.net/gaochao1900/article/details/5646211 
+            ret += __builtin_popcountl(array[i]);
         }
         return ret;
     }
 
-    // 返回包含第b位的word
-    // word定义为特定下标的数组值，如：array[0],array[1]等
     inline size_t containing_word(size_t b) {
         size_t arrpos, bitpos;
         bit_to_pos(b, arrpos, bitpos);
@@ -242,7 +232,7 @@ public:
 
 
      /* ***************************************************************************************************************************
-     *                                                 兼容dense_bitset
+     *                                                 dense_bitset
      * ***************************************************************************************************************************/
     void resize(bit_type n)
     {
@@ -258,8 +248,8 @@ private:
 
     inline static void bit_to_pos(bit_type b, bit_type& arrpos, bit_type& bitpos) {
         // the compiler better optimize this...
-        arrpos = BIT_OFFSET(b);//当前bit位在数组中的位置，如：65位在数组的array[1]中
-        bitpos = BIT_MOD(b);//相当于bitpos = b % (sizeof(size_t)),也就是在对应的数组中的位数
+        arrpos = BIT_OFFSET(b);
+        bitpos = BIT_MOD(b);
     }
 
 

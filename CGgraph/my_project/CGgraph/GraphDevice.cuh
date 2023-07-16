@@ -19,21 +19,21 @@ public:
 	vertex_id_type* csr_dest;
 	edge_data_type* csr_weight;
 	vertex_data_type* vertexValue;
-	vertex_data_type* vertexValue_pr;// 为了pagerank
+	vertex_data_type* vertexValue_pr;
 
 
 	countl_type* csr_offset_device;
 	vertex_id_type* csr_dest_device;
 	edge_data_type* csr_weight_device;
 	vertex_data_type* vertexValue_device;
-	vertex_data_type* vertexValue_device_pr;// 为了pagerank
+	vertex_data_type* vertexValue_device_pr;
 
 	vertex_id_type* worklist_in_device;
 	vertex_id_type* worklist_out_device;
-	countl_type worklist_allocateSize;//预申请的worklist的大小
+	countl_type worklist_allocateSize;
 	DoubleBuffer_array<vertex_id_type>* worklist_device;
 
-	// [0]: worklist_count; [1]: worklist_size; [2]: vertexNum; [3]: edgeNum;  [4]: noZeroOutDegreeNum
+	
 	count_type common_size = 5;
 	offset_type* common;
 	offset_type* common_device;
@@ -43,7 +43,7 @@ public:
 public:
 
 	//===============================================================================
-	//                                    【构造函数】
+	//                                    【con】
 	//===============================================================================
 	GraphDeviceWorklist(CSR_Result_type& csr_result, Algorithm_type algorithm_) :
 		vertexNum(0),
@@ -63,17 +63,17 @@ public:
 
 		timer t;
 		allocate();
-		Msg_info("Host + Device 申请内存用时：%f (ms)", t.get_time_ms());
+		Msg_info("Host + Device time：%f (ms)", t.get_time_ms());
 
 		t.start();
 		csrToDevice();
-		Msg_info("CSR Host to Device 用时：%f (ms)", t.get_time_ms());
+		Msg_info("CSR Host to Device time：%f (ms)", t.get_time_ms());
 	}
 
 public:
 	~GraphDeviceWorklist()
 	{
-		// 只释放本类申请的
+		
 		CUDA_CHECK(cudaFree(csr_offset_device));
 		CUDA_CHECK(cudaFree(csr_dest_device));
 		CUDA_CHECK(cudaFree(common_device));
@@ -91,10 +91,10 @@ public:
 public:
 	double graphProcess_device(Algorithm_type algorithm, vertex_id_type root = 0)
 	{
-		//初始化Algorithm
+	
 		init_algorithm(algorithm, root);
 
-		//通用
+		
 		count_type ite = 0;
 		double processTime = 0.0;
 		count_type nBlock = 0;
@@ -108,7 +108,7 @@ public:
 		}
 		else
 		{
-			assert_msg(false, "init_algorithm 时发现未知算法");
+			assert_msg(false, "init_algorithm error");
 		}
 
 		timer iteTime;
@@ -117,8 +117,8 @@ public:
 		{
 			ite++;
 			singTime.start();
-			common[1] = common[0]; //上次迭代的 worklist_count 为本次迭代的 worklist_size
-			common[0] = 0; // worklist_count, 每次迭代都需要Host负责清空worklist			 
+			common[1] = common[0]; 
+			common[0] = 0;			 
 			CUDA_CHECK(cudaMemcpy(common_device, common, 2 * sizeof(offset_type), cudaMemcpyHostToDevice));//H2D
 
 			nBlock = (common[1] + BLOCKSIZE - 1) / BLOCKSIZE;
@@ -136,7 +136,7 @@ public:
 			}
 			else if (algorithm == Algorithm_type::PR)
 			{
-				for (count_type i = 0; i < vertexNum; i++) vertexValue_pr[i] = 0.0;// 初始化next
+				for (count_type i = 0; i < vertexNum; i++) vertexValue_pr[i] = 0.0;
 				CUDA_CHECK(cudaMemcpy(vertexValue_device_pr, vertexValue_pr, (vertexNum) * sizeof(vertex_data_type), cudaMemcpyHostToDevice));
 
 				nBlock = (vertexNum + BLOCKSIZE - 1) / BLOCKSIZE;
@@ -146,12 +146,12 @@ public:
 			}
 			else
 			{
-				assert_msg(false, "graphProcess_device 时, 发现未知算法");
+				assert_msg(false, "graphProcess_device 时, error");
 			}
 			
 
-			CUDA_CHECK(cudaMemcpy(common, common_device, sizeof(offset_type), cudaMemcpyDeviceToHost));//D2H - 传回上次迭代的worklist_count
-			Msg_info("第[%2u]次迭代结束, worklistCount = (%8u), 用时：%.2f (ms)", ite, common[0], singTime.get_time_ms());
+			CUDA_CHECK(cudaMemcpy(common, common_device, sizeof(offset_type), cudaMemcpyDeviceToHost));//D2H 
+			Msg_info("[%2u], worklistCount = (%8u), time：%.2f (ms)", ite, common[0], singTime.get_time_ms());
 
 			worklist_device->swap();
 
@@ -214,9 +214,9 @@ private:
 			CUDA_CHECK(cudaMemcpy(csr_weight_device, csr_weight, (edgeNum) * sizeof(edge_data_type), cudaMemcpyHostToDevice));
 		}
 
-		count_type vertexNum_ = (count_type)vertexNum; // 防止 count_type 与 offset_type不一致
+		count_type vertexNum_ = (count_type)vertexNum; 
 		CUDA_CHECK(cudaMemcpy(common_device + 2, &vertexNum_, sizeof(count_type), cudaMemcpyHostToDevice));
-		countl_type edgeNum_ = (countl_type)edgeNum; // 防止 count_type 与 offset_type不一致
+		countl_type edgeNum_ = (countl_type)edgeNum; 
 		CUDA_CHECK(cudaMemcpy(common_device + 3, &edgeNum_, sizeof(countl_type), cudaMemcpyHostToDevice));		
 	}
 
@@ -225,32 +225,32 @@ private:
 	{
 		if ((Algorithm_type::BFS == algorithm) || (Algorithm_type::SSSP == algorithm))
 		{
-			//vertexValue初始化
+			//vertexValue
 			for (count_type i = 0; i < vertexNum; i++) vertexValue[i] = VertexValue_MAX;
 			vertexValue[root] = 0;
 			CUDA_CHECK(cudaMemcpy(vertexValue_device, vertexValue, (vertexNum) * sizeof(vertex_data_type), cudaMemcpyHostToDevice));
 
-			//worklist初始化
+			//worklist
 			CUDA_CHECK(cudaMemcpy(worklist_device->in(), &root, sizeof(vertex_id_type), cudaMemcpyHostToDevice));
 		}
 		else if (Algorithm_type::CC == algorithm)
 		{
-			//vertexValue初始化
+			//vertexValue
 			for (count_type i = 0; i < vertexNum; i++) vertexValue[i] = i;
 			CUDA_CHECK(cudaMemcpy(vertexValue_device, vertexValue, (vertexNum) * sizeof(vertex_data_type), cudaMemcpyHostToDevice));
 
-			//第一次需要将每个顶点都加到Worklist中
+			/
 			CUDA_CHECK(cudaMemcpy(worklist_device->in(), vertexValue, sizeof(vertex_data_type)* vertexNum, cudaMemcpyHostToDevice));
 		}
 		else if (Algorithm_type::PR == algorithm)
 		{
-			//vertexValue初始化
-			for (count_type i = 0; i < vertexNum; i++) vertexValue[i] = 1/vertexNum;// 初始化cur
+		
+			for (count_type i = 0; i < vertexNum; i++) vertexValue[i] = 1/vertexNum;
 			CUDA_CHECK(cudaMemcpy(vertexValue_device, vertexValue, (vertexNum) * sizeof(vertex_data_type), cudaMemcpyHostToDevice));
 		}
 		else
 		{
-			assert_msg(false, "init_algorithm 时发现未知算法");
+			assert_msg(false, "init_algorithm error");
 		}
 	}
 

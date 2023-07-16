@@ -93,17 +93,7 @@ T* load_binFile(std::string path, uint64_t length)
 
 
 
-/* ***************************************************************************************
- * Func: Save The Array To Graph File
- *
- * @param [std::string path]       The File To Save Array 
- * @param [T* array]               The Save Array
- * @param [uint64_t length]        The Length Of Array
- * 
- * @Note: 2023-3-20 修改原先的for (T i = 0; i < length; i++) 
- *                  到 for (size_t i = 0; i < length; i++)
- * 					否则在太大的length前无限循环
- * ***************************************************************************************/
+
 template<typename T>
 void save_binArray(std::string outFile, T* array, uint64_t length)
 {

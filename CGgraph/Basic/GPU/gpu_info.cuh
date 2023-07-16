@@ -10,22 +10,17 @@
 #include <sstream>
 #include <assert.h>
 
-/**
- * Func: 获取GPU的基本信息
- *
- * 用法：  GPUInfo GPUInfo;
- *	      GPUInfo.getAllGPUInfo(true);
- */
-//namespace GY {
+
+
 
     class GPUInfo {
 
     private:
 
-        //cudaDeviceProp prop; //主体
+        //cudaDeviceProp prop; 
 
         /**
-         * =============================================【基本信息】
+         * =============================================
          */      
         int device_count;
         int currentDeviceId;
@@ -37,45 +32,43 @@
 
 
         /**
-         * =============================================【计算能力与时钟频率】
+         * =============================================
          */
-        //核频率
-        std::vector<int>          clockRate; //GPU时钟频率
-        std::vector<int>          multiProcessorCount; //SM数量
-        std::vector<int>          coreNum;//总核数
+        //
+        std::vector<int>          clockRate; //GPU clock
+        std::vector<int>          multiProcessorCount; //SMs
+        std::vector<int>          coreNum;//cores
 
-        //计算能力
+        //
         std::vector<int>          major;                      /**< Major compute capability */
         std::vector<int>          minor;                      /**< Minor compute capability */
 
-        //计算模型
+        //
         std::vector<int>          computeMode;                /**< Compute mode (See ::cudaComputeMode) */
-        std::vector<int>          asyncEngineCount; //GPU是否支持设备重叠(Device Overlap)功能,支持设备重叠功能的GPU能够,在执行一个CUDA C核函数的同时，还能在设备与主机之间执行复制等操作,
-
+        std::vector<int>          asyncEngineCount; 
 
 
 
 
         /**
-         * =============================================【内存与时钟频率】
+         * =============================================
          */
-        //内存时钟频率
+        //
         std::vector<int>          memoryClockRate;                        /**< Peak memory clock frequency in kilohertz */
-        std::vector<int>          memoryBusWidth;//显存位宽是显存在一个时钟周期内所能传送数据的位数，位数越大则瞬间所能传输的数据量越大，这是显存的重要参数之一     /**< Global memory bus width in bits */
-
-        //内存
+        std::vector<int>          memoryBusWidth;
+        //
         std::vector < size_t >      totalGlobalMem;
         std::vector < size_t >      sharedMemPerBlock;
         std::vector<int>         regsPerBlock;
         std::vector<int>          l2CacheSize;
-        std::vector<int>          canMapHostMemory;//是否支持CPU和GPU之间的内存映射
-        std::vector<int>          unifiedAddressing;//是否支持设备与主机共享一个统一的地址空间
+        std::vector<int>          canMapHostMemory;
+        std::vector<int>          unifiedAddressing;
         std::vector<int>          managedMemory;              /**< Device supports allocating managed memory on this system */
 
 
         
         /**
-         * =============================================【通用】
+         * =============================================
          */     
         //线程限制
         std::vector<int>          maxThreadsPerMultiProcessor;
@@ -93,28 +86,28 @@
             getAllGPUInfo(isPrint);
         }
 
-        // 获取当前机器总的GPU数
+        
         int getDeviceNum()
         {
             cudaGetDeviceCount(&device_count);
             return device_count;
         }
 
-        // 获取当前机器拥有GPU的Core数
+        
         std::vector<int> getCoreNum()
         {
             assert(isReady);
             return coreNum;
         }
 
-        // 获取当前机器拥有GPU的SM数
+        
         std::vector<int> getSMNum()
         {
             assert(isReady);
             return multiProcessorCount;
         }
 
-		// 获取最大容量(单位是byte)
+		
 		std::vector<size_t> getGlobalMem_byte()
 		{
 			assert(isReady);
@@ -122,7 +115,7 @@
 		}
 
 
-        // 获取GPU的核数
+        
         int getSPcores(int& mp, int& major, int& minor)
         {
             int cores = 0;
@@ -153,11 +146,11 @@
             return cores;
         }
 
-        // 打印GPU的全部信息
+        
         void getAllGPUInfo(bool isPrint = false)
         {
             cudaGetDeviceCount(&device_count);
-            //logstream(LOG_INFO) << "当前服务器共拥有【" << device_count << "】个GPU" << std::endl;
+            
 
             deviceName.resize(device_count);
             clockRate.resize(device_count);
@@ -259,10 +252,6 @@
 
     };
     
-//}
 
-//参考资料：https://www.sohu.com/a/275199558_100007018
-//        https://www.cnpython.com/qa/62311
-//        https://blog.csdn.net/fengbingchun/article/details/76902556
 
 #endif // !GPUInfo_CUH

@@ -5,30 +5,25 @@
 #include "../Platform/platform_def.hpp"
 #include <libgen.h>
 
-#define TOTAL_DEBUG       //不带颜色打印
-#define TOTAL_DEBUG_COLOR //带颜色的更新
+#define TOTAL_DEBUG       //no color
+#define TOTAL_DEBUG_COLOR //color
 
 
-/**
- *  31;40;1m" 是 ANSI 转义序列中控制文本颜色和属性的一种形式。它由以下三个部分组成：
- * "31"：设置前景色为红色
- * "40"：设置背景色为黑色
- * "1m"：设置文本加粗(即高亮),2m:启用暗淡文本;3m:启用斜体文本;4m:启用下划线文本;5m:启用闪烁文本;7m:交换背景色和前景色;8m:隐藏文本(即使其不可见)
- */
+
 #define ESC_START     "\033["
 #define ESC_END       "\033[0m"
-#define COLOR_FATAL   "31;40;5m"   //5:并启用闪烁的文本
+#define COLOR_FATAL   "31;40;5m"   //5:
 #define COLOR_ALERT   "31;40;1m"
 #define COLOR_CRIT    "31;40;1m" 
-#define COLOR_ERROR   "31;48;1m"   //31:是红色
-#define COLOR_WARN    "33;40;1m"   //33:黄色
-#define COLOR_NOTICE  "34;40;1m"   //34:蓝色
-#define COLOR_CHECK   "32;48;5m"   //32:是绿色 + 闪烁
-#define COLOR_WRITE   "36;48;1m"   //36:淡蓝色
-#define COLOR_FREES   "32;48;1m"   //32:绿色
-#define COLOR_FINSH   "32;48;1m"   //32:绿色
-#define COLOR_INFOS   "37;48;1m"   //37:白色  "37;40;1m"  48对应RGB{30,30,30}
-#define COLOR_RATES   "33;48;1m"   //33:黄色
+#define COLOR_ERROR   "31;48;1m"   //31:
+#define COLOR_WARN    "33;40;1m"   //33:
+#define COLOR_NOTICE  "34;40;1m"   //34:
+#define COLOR_CHECK   "32;48;5m"   //32: 
+#define COLOR_WRITE   "36;48;1m"   //36:
+#define COLOR_FREES   "32;48;1m"   //32:
+#define COLOR_FINSH   "32;48;1m"   //32:
+#define COLOR_INFOS   "37;48;1m"   //37:
+#define COLOR_RATES   "33;48;1m"   //33:
 
 
 //************************************************[WINDOW]***********************************************

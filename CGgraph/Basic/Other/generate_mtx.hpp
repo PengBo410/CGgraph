@@ -7,12 +7,12 @@
 
 void main_generate_MTX()
 {
-    std::string graphName = "friendster";//gsh2015tpd	
-	OrderMethod orderMethod = OrderMethod::NATIVE; //如果是OUTDEGREE_THREAD需要开启REORDER宏定义，tasksteal要用，TODO
+    std::string graphName = "";
+	OrderMethod orderMethod = OrderMethod::NATIVE; 
 	bool has_csrFile = 1;
     bool RCM_LAST_ZERO_OUTDEGREE_check = true;
-    //std::string outFile = "/home/pengjie/graph_data/" + graphName + "/" + graphName + "_RCM_LAST_ZERO_OUTDEGREE_.mtx";
-    std::string outFile = "/home/pengjie/graph_data/" + graphName + "/" + graphName + "_NATIVE.mtx";
+ 
+    std::string outFile = "..." + "_NATIVE.mtx";
 
 
     GraphFile_type graphFile = getGraphFile(graphName, orderMethod);
@@ -20,11 +20,10 @@ void main_generate_MTX()
 	std::string file_addition = graphFile.addtitionFile;
 	count_type vertices = graphFile.vertices;
 	countl_type edges = graphFile.edges;
-	//root = graphFile.common_root;
 	Msg_info("GraphName:[%s], |V| = %zu, |E| = %zu", graphName.c_str(), static_cast<uint64_t>(vertices), static_cast<uint64_t>(edges));
 
 
-    /*****************************************************【正常读取图文件】****************************************************************/
+
 	CSR_Result_type csrResult;
 	count_type zeroOutDegreeNum = 0;
 	if (has_csrFile)
@@ -34,9 +33,6 @@ void main_generate_MTX()
 		std::string csrWeightFile = graphFile.csrWeightFile;
 
 
-		//root = graphFile.common_root;
-
-		//从CSR文件中读取csr
 		countl_type* csr_offset = load_binFile<countl_type>(csrOffsetFile, (vertices + 1));
 		vertex_id_type* csr_dest = load_binFile<vertex_id_type>(csrDestFile, edges);
 		edge_data_type* csr_weight = load_binFile<edge_data_type>(csrWeightFile, edges);
@@ -81,7 +77,7 @@ void main_generate_MTX()
 		std::string filePath = graphFile.graphFile;
 		SharedMemory::GraphBinReader graphBinReader(GraphRepresentation::CSR);
 		Msg_info("GraphFile: %s", filePath.c_str());
-		graphBinReader.group_load_directedGraph(filePath, vertices);//测试完以后加入到graphFileList中，
+		graphBinReader.group_load_directedGraph(filePath, vertices);
 		graphBinReader.sort_nbr();
 		//获取CSR
 		graphBinReader.getStruct_csrResult(csrResult);
@@ -106,19 +102,18 @@ void main_generate_MTX()
 					countl_type degreeSize = csrResult.csr_offset[i + 1] - csrResult.csr_offset[i];
 					assert_msg(degreeSize == 0, "degreeSize != 0, vertexId = %zu, degreeSize = %zu", static_cast<uint64_t>(i), static_cast<uint64_t>(degreeSize));
 				}
-				Msg_check("RCM_LAST_ZERO_OUTDEGREE 通过检查！");
+				Msg_check("RCM_LAST_ZERO_OUTDEGREE finish！");
 			}
 		}
 	}
 
 
-    //> 生成 .mtx 文件
     bool mtxFile_exist = (access(outFile.c_str(), F_OK) >= 0);
     if(!mtxFile_exist)
     {
         std::ofstream out_file;
 		out_file.open(outFile.c_str(),
-			std::ios_base::out | std::ios_base::binary);//以二进制读的方式打开,并写入磁盘
+			std::ios_base::out | std::ios_base::binary);
 
         if (!out_file.good()) {
             assert_msg(false, "Error opening out-file: %s", outFile.c_str());
@@ -136,7 +131,7 @@ void main_generate_MTX()
 
             for(countl_type nbrId = nbrStart; nbrId < nbrEnd; nbrId ++)
             {
-                // mtx 文件是从1开始计数,所有我们要在之前的顶点上+1
+                
                 out_file << (vertexId + 1) << " " << (csrResult.csr_dest[nbrId] + 1) << " " << csrResult.csr_weight[nbrId] << std::endl;
 
                 writeEdges ++;
@@ -155,7 +150,7 @@ void main_generate_MTX()
     }
     else
     {
-        Msg_info("MTX File: %s 已经存在", outFile.c_str());
+        Msg_info("MTX File: %s existing", outFile.c_str());
     }
 
 		

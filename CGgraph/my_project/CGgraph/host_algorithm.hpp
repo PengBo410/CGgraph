@@ -22,7 +22,7 @@ namespace Gemini_atomic{
 
 	template <class T>
 	inline bool write_min(T* ptr, T val) {
-		volatile T curr_val; bool done = false;//volatile 有用吗
+		volatile T curr_val; bool done = false;
 #ifdef LOCAL_THREAD_DEBUG
 		size_t count = 0;
 #endif
@@ -58,11 +58,7 @@ namespace Gemini_atomic{
 	}
 
 
-	/* **********************************************************
-	 *  Func: 原子比较两个值的大小
-	 *        若   (ptr > val) return true;
-	 *        否则             return false
-	 * **********************************************************/
+	
 	template <class T>
 	inline bool atomic_large(T* ptr, T val)
 	{
@@ -78,11 +74,7 @@ namespace Gemini_atomic{
 	}
 
 
-	/* **********************************************************
-	 *  Func: 原子比较两个值的大小
-	 *        若   (ptr >= val) return true;
-	 *        否则             return false
-	 * **********************************************************/
+	
 	template <class T>
 	inline bool atomic_largeEqu(T* ptr, T val)
 	{
@@ -98,11 +90,7 @@ namespace Gemini_atomic{
 	}
 
 
-	/* **********************************************************
-	 *  Func: 原子比较两个值的大小
-	 *        若   (ptr <= val) return true;
-	 *        否则             return false
-	 * **********************************************************/
+	
 	template <class T>
 	inline bool atomic_smallEqu(T* ptr, T val)
 	{
@@ -117,9 +105,7 @@ namespace Gemini_atomic{
 		return done;		
 	}
 
-	/* **********************************************************
-	 *  Func: 原子比较两个值的大小,并返回差值
-	 * **********************************************************/
+	
 	template <class T>
 	inline int64_t atomic_length(T* ptr, T val)
 	{

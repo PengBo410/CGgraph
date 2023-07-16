@@ -2,7 +2,6 @@
 
 #include <thread>
 
-#include "Basic/basic_include.cuh"
 #include "taskSteal.hpp"
 #include "Two-level_partition.cuh"
 #include "host_algorithm.hpp"
@@ -22,7 +21,7 @@
 #define HEAVY_ACTIVE_VERTICES 16384
 #define HEAVY_ACTIVE_EDGES 25000000
 
-#define CPU_STEAL_GRANULARITY 41000  // 单位是JOB，默认是 20，当前设置下为400个segment
+#define CPU_STEAL_GRANULARITY 41000  
 #define GPU_WORK_GRANULARITY 128
 
 
@@ -49,15 +48,15 @@ public:
 	count_type socketNum;
 	count_type threadPerSocket;
 	count_type threadNum;
-	count_type vertexPerSocket; // 按PAGESIZE对齐
+	count_type vertexPerSocket; 
 
-	count_type* numa_offset;// 长度为：socketNum + 1  -> 将本机的顶点进行了划分
+	count_type* numa_offset;// 
 	countl_type** csr_offset_numa;// [socketId][offset]
 	vertex_id_type** csr_dest_numa;// [socketId][dest]
 	edge_data_type** csr_weight_numa;// [socketId][weight]	
-	count_type* vertexNum_numa;//每个numa的顶点数, 长度为：socketNum, 应该按照pageSize对齐
-	countl_type* edgeNum_numa;//每个numa的边数, 长度为：socketNum
-	count_type* zeroOffset_numa;//归零的偏移量, 长度为：socketNum
+	count_type* vertexNum_numa;
+	countl_type* edgeNum_numa;
+	count_type* zeroOffset_numa;
 	countl_type* zeroDegree_numa;
 
     //> TaskSteal
@@ -76,10 +75,9 @@ public:
 	dense_bitset active_in;  // Fixed_Bitset | dense_bitset
 	dense_bitset active_out; // Fixed_Bitset | dense_bitset
 	dense_bitset active_steal;
-	DoubleBuffer<dense_bitset> active; //active_in与active_out最终封装到DoubleBuffer
-	count_type activeNum_device = 0;  // Device 端激活的顶点数
-	count_type activeNum_host = 0;    // Host   端激活的顶点数
-	count_type activeNum = 0;         // Device + Host 端总共激活的顶点数
+	count_type activeNum_device = 0;  
+	count_type activeNum_host = 0;    
+	count_type activeNum = 0;         
 	countl_type activeEdgeNum = 0;
 	size_t firstWordIndex = 0;
 	size_t lastWordIndex = 0;
@@ -87,32 +85,32 @@ public:
 
     //> Algorithm
 	Algorithm_type algorithm;
-	count_type ite = 0; // 迭代次数
+	count_type ite = 0; 
 	bool is_outDegreeThread = false;
 
     //> Device
     int useDeviceNum;
     int useDeviceId = 0;
-	uint64_t nBlock;     //要使用的Device开启的blockNum
+	uint64_t nBlock;   
 
-	std::mutex wakeupDevice_mutex; // 用于唤醒Device
+	std::mutex wakeupDevice_mutex; 
 	std::mutex queue_mutex;
 	std::vector<size_t> wakeupDevice;
-	bool hybirdComplete = false;     // Hybird迭代是否完成
-	bool usedDevice = false;         // 标志是否使用过Device
-	bool usedDevice_ite = false;     // 标记本次迭代是否使用过Device
-	dense_bitset stealMask;        // size is useDeviceNum, 0 mark cannot steal, 1 mark can steal 
-	size_t noWorkloadSeg = 0;        // The number of no workload segment
+	bool hybirdComplete = false;     
+	bool usedDevice = false;         
+	bool usedDevice_ite = false;     
+	dense_bitset stealMask;        
+	size_t noWorkloadSeg = 0;        
     
-	count_type common_size = 9; // [0]: worklist_count; [1]: worklist_size; [2]: vertexNum; [3]: edgeNum;  [4]: noZeroOutDegreeNum; 
-                                // [5]: SEGMENT_SIZE:   [6]: JOB_SIZE       [7] segment_start; [8] GPU_MODEL_START
+	count_type common_size = 9;  
+                                
 	//std::vector<common_type*> common_host;
 	std::vector<common_type*> common_device;
 
 	std::vector<cudaStream_t > stream_device_vec;
     
 
-    //> Job
+    //> 
     std::vector<uint64_t> jobSize_vec; //Util is vertices
 
 	//> Workload
@@ -123,14 +121,14 @@ public:
 
 	uint32_t workloadQueueHead_host = 0;
 	uint32_t workloadQueueTail_host = 0;
-	bool hasOwnWorkload_CPU = false; // 代替workloadQueueTail_host, 表示CPU在本次迭代中是否具有workload
+	bool hasOwnWorkload_CPU = false; 
 	std::vector<uint32_t> workloadQueue_host_vec;
 
-	// 在设计从大到小减的运算中, 类型要是用无符号的, 切不要是用有符号和无符号的数据进行比较大小
+	
 	std::vector<int64_t> workloadQueueHead_device_vec; 
-	std::vector<int64_t> workloadQueueTail_device_vec;  //Segment Num, 要减去，所以要为有符号
-	std::vector<uint32_t> workloadQueueConstTail_device_vec;  //Segment Num
-	std::vector<std::vector<Workload_type>> workloadQueue_device_vec2;  // 粒度是segment
+	std::vector<int64_t> workloadQueueTail_device_vec;  
+	std::vector<uint32_t> workloadQueueConstTail_device_vec;  
+	std::vector<std::vector<Workload_type>> workloadQueue_device_vec2;  
 
 	std::vector<uint64_t*> bitmap_host_vec; // Bitmap For GPU To Prevent Its Work-Efficient
 	std::vector<uint64_t*> bitmap_device_vec; // Bitmap For GPU To Prevent Its Work-Efficient
@@ -138,7 +136,7 @@ public:
 	std::vector<uint32_t*> trasfer_segment_host_vec;
 	std::vector<uint32_t*> trasfer_segment_device_vec;
 
-	std::vector<uint64_t> processSegmentCount_vec;//统计每次迭代中所有处理器处理完成的segment数(GPU-0,GPU-1,CPU),用于验证
+	std::vector<uint64_t> processSegmentCount_vec;
 	std::vector<uint64_t> CPUSegmentCount_vec;
 	std::vector<timeval> processorEndTime_vec;
 	timer processorEnd_time;
@@ -186,7 +184,7 @@ public:
 		 "(useDeviceNum > _maxDeviceNum), useDeviceNum = %d, _maxDeviceNum = %d", useDeviceNum, _maxDeviceNum);
 		stealMask.resize(useDeviceNum);
 
-         //Job Size
+         //
          jobSize_vec.resize(useDeviceNum);
          for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
          {
@@ -279,7 +277,7 @@ public:
 		agent_vec.resize(useDeviceNum);
 		for(int deviceId = 0; deviceId < useDeviceNum; deviceId ++){
 			CUDA_CHECK(cudaSetDevice(deviceId));
-			agent_vec[deviceId] = std::thread(&CGgraphEngine::GPU_Execution_Model, this, deviceId);//开启控制Device的线程
+			agent_vec[deviceId] = std::thread(&CGgraphEngine::GPU_Execution_Model, this, deviceId);
 		}
 
 		// CPU/GPU Co-execution
@@ -287,7 +285,7 @@ public:
 		timer iteTime_total;
 		timer iteTime_single;
 		timer tempTime;
-		timer heavyTemp_time; //测量Heavy内部的时间
+		timer heavyTemp_time; 
 
 		// Iterative fashion
 		iteTime_total.start();
@@ -320,9 +318,9 @@ public:
 			{
 				workloadHet = Workload_heterogeneous::HEAVY;
 				activeEdgeNum = edgeNum;
-			}else if(activeNum >= HEAVY_ACTIVE_VERTICES){ //尽量使用activeNum多做点事
+			}else if(activeNum >= HEAVY_ACTIVE_VERTICES){
 
-				//1. Calcuate The workloadHet
+				
 				firstWordIndex = 0; lastWordIndex = 0; activeEdgeNum = 0;
 				hasOwnWorkload_CPU = false;
 				for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
@@ -348,32 +346,22 @@ public:
 					workloadHet = Workload_heterogeneous::HEAVY;
 				}
 			}
-			#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-				logstream(LOG_INFO) << "\t\t2. [Heavy  or  Light], Used time :" 
-					<< std::setw(7) << std::setprecision(2) << std::fixed
-					<< tempTime.get_time_ms() << " (ms)" 
-					<< ", workloadHet (0-Light, 1-Heavy): " << workloadHet
-					<< ", firstWordIndex = " << firstWordIndex 
-					<< ", activeEdgeNum = " << activeEdgeNum
-					<< std::endl;
-			#endif
+			
 		
 
 			//? Simulate The Heavy
 			//workloadHet = Workload_heterogeneous::LIGHT;
 
-			//> workloadHet : [Heavy]
+			
 			#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 			tempTime.start();
 			#endif
 			if(workloadHet == Workload_heterogeneous::HEAVY)
 			{
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-				Msg_major("-------------- The [Heavy] Workload -------------- ");
-				#endif
+		
 				usedDevice_ite = true;
 
-				//> [Heavy Workload]: 1. Partition The Workload
+				
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif
@@ -429,18 +417,13 @@ public:
 						//memset(active.in().array + startWordIndex, 0, sizeof(size_t) * (endWordIndex - startWordIndex));					
 					}
 
-				}// end of [Partition The Workload]
+				}
 
 				for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
 				{
 					workloadQueueConstTail_device_vec[deviceId] = workloadQueueTail_device_vec[deviceId];					
 				}
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.1 [H: Par. Workload], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-				#endif
+				
 				
 
 				// Check
@@ -455,9 +438,7 @@ public:
 				for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
 				{
 					assert_msg(workloadQueueTail_device_vec[deviceId] <= partitionResult.segmentNum,
-						"The [%d] GPU Has  Active Segment (%zu), Which Large Than Total Segment (%zu)",
-						deviceId, static_cast<uint64_t>(workloadQueueTail_device_vec[deviceId]),
-						static_cast<uint64_t>(partitionResult.segmentNum)
+						""
 					);
 
 					#pragma omp parallel for reduction(+: partitionWorkload_vertexNum_device)
@@ -477,8 +458,7 @@ public:
 				#endif
 				
 				
-				//> [Heavy Workload]: 2. Sort Each GPU Workload and Transfer The vertexValue To Device
-				//TODO 我们采用异步引擎，然后对比sort能否带来优化
+				//> [Heavy Workload]
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif
@@ -547,12 +527,7 @@ public:
 				// 		CUDA_CHECK(H2D(vertexValue_temp_device[deviceId], vertexValue, noZeroOutDegreeNum));
 				// 	}								
 				// }
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.2 [H: Sort and Tra.], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed 
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-				#endif			
+							
 
 				//Check The Sort
 				#ifdef CGGRAPHENGINE_CHECK	
@@ -575,24 +550,7 @@ public:
 				}	
 				#endif
 
-				////打印
-				// std::ofstream out_file;
-				// out_file.open("/home/pengjie/vs_log/temp.txt",
-				// 	std::ios_base::out | std::ios_base::binary);//Opens as a binary read and writes to disk
-				// if (!out_file.good()) assert_msg(false, "Error opening out-file");
-				// for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
-				// {
-				// 	for (uint32_t workloadId = 0; workloadId < workloadQueueTail_device_vec[deviceId]; workloadId++)
-				// 	{
-				// 		out_file << "[" << deviceId << "], (" << workloadId << "). seg_id = " <<
-				// 		(workloadQueue_device_vec2[deviceId][workloadId].seg_id) << ", activeVertices = " <<
-				// 		(workloadQueue_device_vec2[deviceId][workloadId].seg_activeVertexNum) << std::endl;
-				// 	}
-				// 	out_file << "------------------------------" << std::endl;
-				// }
-				// out_file.close();
-
-				//>[Heavy Workload]: 3. Copy active dense_bitset
+				
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif
@@ -603,15 +561,10 @@ public:
 						active_steal.array[wordId] = active.in().array[wordId];
 					}
 				}
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.3 [H:  Copy  active], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed 
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-				#endif		
+					
 
 
-				//> [Heavy Workload]: 3. Build The Bitmap To Prevent GPU Work-Efficient	
+				//> [Heavy Workload]: 
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif		
@@ -638,16 +591,15 @@ public:
 							std::memcpy(bitmap_host_vec[deviceId] + (SEGMENT_SIZE / WORDSIZE) * workloadId, 
 								   active.in().array + startWordIndex, sizeof(uint64_t) * (SEGMENT_SIZE / WORDSIZE)
 							);
-							// 我们只有在GPU无法容纳时才启用清除
+							// 
 							if(!partitionResult.canHoldAllSegment){
 								memset(active.in().array + startWordIndex, 0, sizeof(uint64_t) * (SEGMENT_SIZE / WORDSIZE));
 							}
 						}
-						// Not Align (//TODO: 让不对齐的总是留给CPU)
+						// Not Align
 						else
 						{
-							#ifdef CGGRAPHENGINE_CHECK
-							Msg_rate("The [%d] GPU. This Msg Can Only Appear One !", deviceId);
+							#ifdef CGGRAPHENGINE_CHECK							
 							assert_msg(segmentId = (partitionResult.segmentNum - 1), "Only The Last Segment May Be Not Align");
 							#endif
 
@@ -661,7 +613,7 @@ public:
 							std::memcpy(bitmap_host_vec[deviceId] + (SEGMENT_SIZE / WORDSIZE) * workloadId, 
 								   temp_append, sizeof(uint64_t) * (SEGMENT_SIZE / WORDSIZE)
 							);
-							// 我们只有在GPU无法容纳时才启用清除
+							//
 							if(!partitionResult.canHoldAllSegment){
 								memset(active.in().array + startWordIndex, 0, sizeof(uint64_t) * (endWordIndex - startWordIndex));
 							}
@@ -669,17 +621,11 @@ public:
 						}
 					}
 				}
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.3 [H: Bitmap to GPU], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-				#endif
+				
 
 				//Check Each GPU's Bitmap
 				
-				#ifdef CGGRAPHENGINE_CHECK
-				Msg_info("After Partition, In Active.in(), The Result Bits Are (%zu)", active.in().popcount());
+				#ifdef CGGRAPHENGINE_CHECK			
 				for(int deviceId = 0; deviceId < useDeviceNum; deviceId ++)
 				{
 					uint64_t active_vertexNum = 0;
@@ -701,7 +647,6 @@ public:
 				#endif
 
 
-				//> [Heavy Workload]: 4. Transfer The Bitmap (Active) To Device
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif
@@ -711,15 +656,10 @@ public:
 					CUDA_CHECK(cudaSetDevice(deviceId));
 					CUDA_CHECK(H2D(bitmap_device_vec[deviceId], bitmap_host_vec[deviceId], partitionResult.segmentNum_device_vec[deviceId] * (SEGMENT_SIZE / WORDSIZE)));
 				}	
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.4 [H: Trans. Bitmap], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-				#endif
+				
 
 
-				//> [Heavy Workload]: 5. Notice The Agent Driven The GPU
+				
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif
@@ -731,17 +671,10 @@ public:
 					wakeupDevice_mutex.unlock();
 					usedDevice = true;
 				}
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.5 [H: Notice  Agent], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-				#endif
-				
-				
+									
 
 
-				//> [Heavy Workload]: 6. CPU Processes Its Own Workload First 
+				
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif
@@ -749,14 +682,9 @@ public:
 				{
 					CPU_Execution_Model();
 				}
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.6 [H: CPU Proc. Own], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-				#endif
+				
 
-				//> [Heavy Workload]: 7. CPU Steal The WorkLoads From The GPUs, Steal Granularity Is A Job
+				
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 					heavyTemp_time.start();
 				#endif				
@@ -769,17 +697,16 @@ public:
 					{
 						if(workloadQueueHead_device_vec[currentStealTarget] < workloadQueueTail_device_vec[currentStealTarget])
 						{
-							//Msg_major("开始窃取GPU [%d], 此时的tail = %ld", currentStealTarget, workloadQueueTail_device_vec[currentStealTarget]);
-							//TODO 我们现在采用任务抢夺的方式来窃取任务，但需要注意我们要让每个GPU的workloadsize按照jobSize对齐
+							
 							int64_t stop = workloadQueueTail_device_vec[currentStealTarget];
 							int64_t stopconst = stop;
 							uint32_t steal_segmentNum = workloadQueueTail_device_vec[currentStealTarget] % (jobSize_vec[currentStealTarget] / SEGMENT_SIZE);
 							if(steal_segmentNum == 0) steal_segmentNum = jobSize_vec[currentStealTarget] / SEGMENT_SIZE;
-							steal_segmentNum += CPU_STEAL_GRANULARITY * (jobSize_vec[currentStealTarget] / SEGMENT_SIZE);//我们希望多窃取
+							steal_segmentNum += CPU_STEAL_GRANULARITY * (jobSize_vec[currentStealTarget] / SEGMENT_SIZE);
 							stop -= steal_segmentNum;
 							if(stop < 0) stop = 0;
 
-							//! 从头开始测试
+							
 							// #pragma omp parallel
 							// {
 							// 	while(true)
@@ -811,7 +738,7 @@ public:
 							// 					countl_type nbr_start = csr_offset_numa[vertexSocketId][vertexId_numa];
 							// 					countl_type nbr_end = csr_offset_numa[vertexSocketId][vertexId_numa + 1];
 
-							// 					//逻辑
+							// 					//
 							// 					vertex_data_type srcVertexValue = vertexValue[vertexId_current];
 							// 					for (countl_type nbr_cur = nbr_start; nbr_cur < nbr_end; nbr_cur++)
 							// 					{
@@ -835,15 +762,14 @@ public:
 							// }// end of [parallel for]
 
 							
-							//! 从尾部开始
+							//
 							#pragma omp parallel
 							{
 								while(true)
 								{
-									int64_t current_Tail = __sync_sub_and_fetch(&workloadQueueTail_device_vec[currentStealTarget], 1);//每个线程一次窃取一个segment
-									if(current_Tail < stop) break; // 本次要处理到的点
-									if(Gemini_atomic::atomic_large(&workloadQueueHead_device_vec[currentStealTarget], current_Tail)) break;
-									//if(current_Tail <  static_cast<int64_t>()) break;//用原子操作
+									int64_t current_Tail = __sync_sub_and_fetch(&workloadQueueTail_device_vec[currentStealTarget], 1);
+									if(current_Tail < stop) break; 
+									if(Gemini_atomic::atomic_large(&workloadQueueHead_device_vec[currentStealTarget], current_Tail)) break;							
 
 									//assert_msg(current_Tail >=0, "current_Tail = %ld", current_Tail);
 									Workload_type workload = workloadQueue_device_vec2[currentStealTarget][current_Tail];
@@ -882,7 +808,7 @@ public:
 												countl_type nbr_start = csr_offset_numa[vertexSocketId][vertexId_numa];
 												countl_type nbr_end = csr_offset_numa[vertexSocketId][vertexId_numa + 1];
 
-												//逻辑
+												//
 												if (Algorithm_type::BFS == algorithm)
 												{
 													BFS_SPACE::bfs_numa_steal<CGgraphEngine>(*this, vertexId_current, nbr_start, nbr_end, vertexSocketId, true);
@@ -894,6 +820,10 @@ public:
 												else if (Algorithm_type::CC == algorithm)
 												{
 													CC_SPACE::wcc_numa_steal<CGgraphEngine>(*this, vertexId_current, nbr_start, nbr_end, vertexSocketId, true);
+												}
+												else if (Algorithm_type::PR == algorithm)
+												{
+													PR_SPACE::PR_numa_steal<CGgraphEngine>(*this, vertexId_current, nbr_start, nbr_end, vertexSocketId, true);
 												}
 												else
 												{
@@ -908,33 +838,25 @@ public:
 								}
 							}// end of [parallel for]
 
-							// 我们要将多减去的归位
+					
 							//assert_msg(workloadQueueTail_device_vec[currentStealTarget] <= stop, "error");
 							__sync_lock_test_and_set(&workloadQueueTail_device_vec[currentStealTarget], stop);
 							
-							//Msg_major("窃取GPU [%d]结束, 此时的tail = %ld", currentStealTarget,workloadQueueTail_device_vec[currentStealTarget]);
+							
 						}
 						else
 						{
-							stealMask.clear_bit(currentStealTarget);
-							//Msg_info("The [%d] GPU Has No Workload To Steal", currentStealTarget);
+							stealMask.clear_bit(currentStealTarget);							
 							if(stealMask.empty()) break;
 							
 						}										
 					}// Current GPU Still Has Workload
 
 				}while(true);
-				//printf("退出\n");
 				processorEndTime_vec[useDeviceNum] = processorEnd_time.curTimeval();
-				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.7 [H: CPU Fi. Steal], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< ", stealNum = " << stealNum
-						<< std::endl;
-				#endif
+				
 
-				//> 8. Wait To All Processors Complete
+				
 				{
 					#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 						heavyTemp_time.start();
@@ -950,13 +872,7 @@ public:
 							__asm volatile ("pause" ::: "memory");
 						}
 					}
-									
-					#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.8 [H: CPU  Waiting], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
-					#endif
+														
 				}
 				
 
@@ -966,22 +882,10 @@ public:
 				#endif
 				if(usedDevice_ite) reduce();
 				#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-					logstream(LOG_INFO) << "\t\t\t2.9 [H: CPU  Reducing], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< heavyTemp_time.get_time_ms() << " (ms)" 
-						<< std::endl;
+				
 
-					//分析时间
-					for(int deviceId=0; deviceId < useDeviceNum; deviceId++)
-					{
-						logstream(LOG_INFO) << "\t\t\t2.10[H: CPU vs Mu-GPU], Time: The GPU[" << deviceId
-							<<"] - CPU :" <<  std::setw(7) << std::setprecision(2) << std::fixed
-							<< ((double)(processorEndTime_vec[deviceId].tv_sec - processorEndTime_vec[useDeviceNum].tv_sec) +
-								((double)(processorEndTime_vec[deviceId].tv_usec - processorEndTime_vec[useDeviceNum].tv_usec)) / 1.0E6) * 1000
-							<< " (ms)"
-							<< std::endl;
-					}
-					//分析segment量
+					
+					//
 					uint64_t total_CPU_segments = 0;
 					for (int tid = 0; tid < ThreadNum; tid++)
 					{
@@ -995,9 +899,7 @@ public:
 						total_segments_ready += workloadQueueConstTail_device_vec[deviceId];
 					}	
 					total_segments_ready += workloadQueueTail_host;				
-					logstream(LOG_INFO) << "\t\t\t2.11[H: CPU vs Mu-GPU], Segment: The GPU Process Segments (" << total_GPU_segments
-						<< "), The CPU Process Segments (" << total_CPU_segments << "), Total_segments (" << total_segments_ready << ")"
-						<< std::endl;
+					
 				#endif
 			}// end of [Heavy Workload]
 
@@ -1009,12 +911,7 @@ public:
 
 			}// end of [Light Workload]
 
-			#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-			logstream(LOG_INFO) << "\t\t2. [Light or Heavy Computation], Used time :" 
-						<< std::setw(7) << std::setprecision(2) << std::fixed
-						<< tempTime.get_time_ms() << " (ms)" 
-						<< std::endl;
-			#endif
+			
 
 
 			//activeNum = parallel_popcount(active.out().array);
@@ -1028,19 +925,14 @@ public:
 				activeNum_host = activeNum - activeNum_device;
 			}else{		
 				activeNum = parallel_popcount(active.out().array);		
-				activeNum_host = activeNum; //! 注意这种计数并不准确，但是可以用于确定activeNum是否为0,需要精确则需调用parallel_popcount()
+				activeNum_host = activeNum; 
 				activeNum_device = 0;
 			}
-			#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-				logstream(LOG_INFO) << "\t\t3. [Get Active Num], Used time :" 
-					<< std::setw(7) << std::setprecision(2) << std::fixed
-					<< tempTime.get_time_ms() << " (ms)" 
-					<< std::endl;
-			#endif
+			
            
 			
 
-			std::cout << "\t[Single-Ite]：第(" << std::setw(3) << ite << ")次迭代完成, WorkloadHet:{"
+			std::cout << "\t[Single-Ite]：(" << std::setw(3) << ite << "), WorkloadHet:{"
 					<< workloadHet 
 					<< "}, time = (" << std::setw(7) << std::setprecision(2) << std::fixed << iteTime_single.current_time_millis()
 					<< " ms), activeNum_host = " << activeNum_host
@@ -1048,14 +940,7 @@ public:
 					<< ", activeNum  = (" << activeNum << ")" 
 					<< std::endl;
 
-			#ifdef CGGRAPHENGINE_DETAIL_DEBUG
-				logstream(LOG_INFO) << "\t[Single-Ite]：第(" << std::setw(3) << ite << ")次迭代完成, WorkloadHet:{"
-					<< workloadHet 
-					<< "}, time = (" << std::setw(7) << std::setprecision(2) << std::fixed << iteTime_single.current_time_millis()
-					<< " ms), activeNum_host = " << activeNum_host
-					<< ", activeNum_device = " << activeNum_device
-					<< ", activeNum  = (" << activeNum << ")" << std::endl;
-			#endif
+			
 
 			if (activeNum == 0)
 			{
@@ -1072,20 +957,13 @@ public:
 				break;
 			}
 
-			// #ifdef CGGRAPHENGINE_DETAIL_DEBUG
-			// 	tempTime.start();
-			// #endif
+			
 			active.swap();
-			// #ifdef CGGRAPHENGINE_DETAIL_DEBUG
-			// 	logstream(LOG_INFO) << "\t\t[4. Swap], Used time :" 
-			// 		<< std::setw(7) << std::setprecision(2) << std::fixed <<
-			// 		<< tempTime.get_time_ms() << " (ms)" 
-			// 		<< std::endl;
-			// #endif
+			
 
 		}while(1);
 
-		//[CHOOSE]: 如果启用过Device, 最后将outDegree为0的顶点从Device端传回到Host端更新
+		//[CHOOSE]:
 		if (usedDevice)
 		{
 			reduce_zeroOutDegree();
@@ -1118,8 +996,8 @@ private:
 		omp_parallel_for(int threadId = 0; threadId < threadNum; threadId++)
 		{
 #ifdef CGGRAPHENGINE_DEBUG
-			int thread_id = omp_get_thread_num();//获取线程的id
-			int core_id = sched_getcpu();//获取物理的id
+			int thread_id = omp_get_thread_num
+			int core_id = sched_getcpu();
 			int socket_id = getThreadSocketId(threadId);
 			logstream(LOG_INFO) << "[" << std::setw(2) << threadId
 				<< "]: Thread(" << std::setw(2) << thread_id
@@ -1160,7 +1038,7 @@ private:
 		numa_offset = new count_type [socketNum + 1];
 		numa_offset[0] = 0;
 
-		vertexPerSocket = noZeroOutDegreeNum / socketNum / WORDSIZE * WORDSIZE; //必选按word对齐,否则active会在窃取时乱套
+		vertexPerSocket = noZeroOutDegreeNum / socketNum / WORDSIZE * WORDSIZE;
 
 		for (count_type socketId = 1; socketId < socketNum; socketId++)
 		{
@@ -1178,7 +1056,7 @@ private:
 			offset_type offset = csr_offset[numa_offset[socketId]];
 			for (count_type i = 0; i < (vertex_numa + 1); i++)
 			{
-				csr_offset_numa[socketId][i] = csr_offset[numa_offset[socketId] + i] - offset; //让CSR的offset从零开始
+				csr_offset_numa[socketId][i] = csr_offset[numa_offset[socketId] + i] - offset; 
 			}
 
 			csr_dest_numa[socketId] = (vertex_id_type*)numa_alloc_onnode((edges_numa) * sizeof(vertex_id_type), socketId);
@@ -1187,7 +1065,7 @@ private:
 			csr_weight_numa[socketId] = (edge_data_type*)numa_alloc_onnode((edges_numa) * sizeof(edge_data_type), socketId);
 			memcpy(csr_weight_numa[socketId], csr_weight + csr_offset[numa_offset[socketId]], edges_numa * sizeof(edge_data_type));
 
-			//存储常用到的变量
+		
 			vertexNum_numa[socketId] = vertex_numa;
 			edgeNum_numa[socketId] = edges_numa;
 			zeroOffset_numa[socketId] = numa_offset[socketId];
@@ -1422,9 +1300,14 @@ private:
 			}
 
 		}
-		else if(Algorithm_type::PR == algorithm)
+		else if (Algorithm_type::PR == algorithm)
 		{
-			assert_msg(false, "TODO: PageRank !");
+			active.in().clear_memset();
+			active.out().clear_memset();
+
+			active.in().fill();
+
+			for (count_type i = 0; i < vertexNum; i++) vertexValue[i] = 1;
 		}
 		else
 		{
@@ -1439,7 +1322,7 @@ private:
 	void clearActiveOut()
 	{
 		if ((Algorithm_type::BFS == algorithm) || (Algorithm_type::SSSP == algorithm)|| 
-			(Algorithm_type::CC == algorithm))
+			(Algorithm_type::CC == algorithm) || (Algorithm_type::PR == algorithm))
 		{
 			omp_parallel
 			{
@@ -1449,10 +1332,7 @@ private:
 				memset(active.out().array + cur, 0, sizeof(size_t) * (end - cur));
 			}
 		}
-		else if (Algorithm_type::PR == algorithm)
-		{
-			assert_msg(false, "TODO: PageRank");
-		}
+		
 		else
 		{
 			assert_msg(false, "clearActiveOut Meet Unknown Algorithm");
@@ -1502,8 +1382,8 @@ private:
 	 * ***************************************************************************/
 	countl_type getActiveEdgeNum(size_t first, size_t last)
 	{
-		size_t _first = first * WORDSIZE; //回归到顶点,第一个顶点
-		size_t _last = last * WORDSIZE;   //回归到顶点,最后一个顶点
+		size_t _first = first * WORDSIZE; 
+		size_t _last = last * WORDSIZE;   
 		size_t work = _last - _first;
 		size_t totalWorkloads = 0;
 
@@ -1566,17 +1446,18 @@ private:
 				if (Algorithm_type::BFS == algorithm)
 				{
 					return BFS_SPACE::bfs_numa<CGgraphEngine>(*this, vertex, nbr_start, nbr_end, socketId, sameSocket);
-					//return BFS_SPACE::bfs_numa_lastzero<CGgraphEngine>(*this, vertex, nbr_start, nbr_end, socketId, sameSocket);
 				}
 				else if (Algorithm_type::SSSP == algorithm)
 				{
 					return SSSP_SPACE::sssp_numa<CGgraphEngine>(*this, vertex, nbr_start, nbr_end, socketId, sameSocket);
-					//return SSSP_SPACE::sssp_numa_lastzero<CGgraphEngine>(*this, vertex, nbr_start, nbr_end, socketId, sameSocket);
 				}
 				else if (Algorithm_type::CC == algorithm)
 				{
 					return CC_SPACE::cc_numa<CGgraphEngine>(*this, vertex, nbr_start, nbr_end, socketId, sameSocket);
-					//return CC_SPACE::cc_numa_lastzero<CGgraphEngine>(*this, vertex, nbr_start, nbr_end, socketId, sameSocket);
+				}
+				else if (Algorithm_type::PR == algorithm)
+				{
+					return PR_SPACE:pr_numa<CGgraphEngine>(*this, vertex, nbr_start, nbr_end, socketId, sameSocket);
 				}
 				else
 				{
@@ -1655,25 +1536,22 @@ private:
 			deviceTime.start();
 			#endif
 
-			//> 1. Async Transfer The Bitmap_device To Device
+			
 			CUDA_CHECK(cudaMemcpyAsync(bitmap_device_vec[deviceId], bitmap_host_vec[deviceId], 
 				workloadQueueConstTail_device_vec[deviceId] * sizeof(uint64_t), cudaMemcpyHostToDevice, stream_device_vec[deviceId]));
 
-			//> 2. Get The SegmentId and GPU Execution
+			
 			int itee = 0;
 			#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 			deviceTime.start();		
 			#endif	
 			while(true){				
-				//Get The SegmentId
-				// printf("[%d], %d行, workloadQueueHead_device_vec[deviceId] = %zu, len = %zu\n", deviceId, __LINE__, 
-				// workloadQueueHead_device_vec[deviceId], (jobSize_vec[deviceId] / SEGMENT_SIZE));
-				// TODO 把segmentId也全部传过去
+				
 				size_t changeVar = (GPU_WORK_GRANULARITY / (pow(2, itee))) > 20 ?  (GPU_WORK_GRANULARITY / (pow(2, itee))) : 20;
 				size_t changeSize =  changeVar * (jobSize_vec[deviceId] / SEGMENT_SIZE) ;
 				size_t segmentId_current = __sync_fetch_and_add(&workloadQueueHead_device_vec[deviceId], changeSize);
 				if(Gemini_atomic::atomic_smallEqu(&workloadQueueTail_device_vec[deviceId], static_cast<int64_t>(segmentId_current))) break;
-				//if(segmentId_current >= workloadQueueTail_device_vec[deviceId])  break;
+				
 
 				int64_t segment_length = static_cast<int64_t>(changeSize) ;
 				//queue_mutex.lock();
@@ -1689,7 +1567,7 @@ private:
 				// if(segmentId_current + segment_length >= workloadQueueTail_device_vec[deviceId]){
 				// 	segment_length =  workloadQueueTail_device_vec[deviceId] - segmentId_current;
 				// }				
-				// Msg_info("--->The GPU [%d] 第 (%d) 次迭代的segmentId_current = %zu, segment_length = %zu", deviceId, itee,
+				// Msg_info("--->The GPU [%d] - (%d) segmentId_current = %zu, segment_length = %zu", deviceId, itee,
 				// 	 static_cast<uint64_t>(segmentId_current),
 				// 	 static_cast<uint64_t>(segment_length)
 				// );
@@ -1700,7 +1578,7 @@ private:
 						workloadQueue_device_vec2[deviceId][segmentId_current + segmentId].seg_id;
 					// if(deviceId == 0 && itee < 2)
 					// {
-					// 	// Msg_info("--->The GPU [%d] 第 (%d) 次迭代的segment = %zu, (%zu),: index = %zu, offset = %zu", deviceId, itee, 
+					// 	// Msg_info("--->The GPU [%d] - (%d) segment = %zu, (%zu),: index = %zu, offset = %zu", deviceId, itee, 
 					// 	// 	static_cast<uint64_t>(trasfer_segment_host_vec[deviceId][segmentId]),
 					// 	// 	static_cast<uint64_t>(workloadQueue_device_vec2[deviceId][segmentId_current + segmentId].seg_id),
 					// 	// 	segmentId,
@@ -1709,16 +1587,15 @@ private:
 					// }
 					
 				}
-				//Msg_rate("【%d】trasfer_segment_device_vec-H2D前", deviceId);
+				//Msg_rate("【%d】trasfer_segment_device_vec-H2D", deviceId);
 				CUDA_CHECK(H2D(trasfer_segment_device_vec[deviceId], trasfer_segment_host_vec[deviceId], segment_length));
-				//Msg_rate("【%d】trasfer_segment_device_vec-H2D完成", deviceId);
+				//Msg_rate("【%d】trasfer_segment_device_vec-H2D", deviceId);
 
 				common_type segment_start_ = static_cast<common_type>(segmentId_current); 
 				CUDA_CHECK(H2D(common_device[deviceId] + 7, &segment_start_, 1));
-				//Msg_rate("segment_start_-H2D完成");
+				//Msg_rate("segment_start_-H2D");
 
-				CUDA_CHECK(cudaStreamSynchronize(stream_device_vec[deviceId])); // Wait for the CUDA stream to finish
-				//Msg_rate("【%d】cudaStreamSynchronize完成", deviceId);
+				CUDA_CHECK(cudaStreamSynchronize(stream_device_vec[deviceId])); // Wait for the CUDA stream to finish				
 
 				// GPU execution
 				nBlock = (segment_length * SEGMENT_SIZE + BLOCKSIZE - 1) / BLOCKSIZE;
@@ -1732,15 +1609,15 @@ private:
 				}
 				else if (algorithm == Algorithm_type::CC)
 				{
-					assert_msg(false, "Wait For CC In GPU_EXECUTION_MODEL");
+					CC_SPACE::wcc_device<CGgraphEngine>(*this, nBlock, deviceId);
 				}
 				else if (algorithm == Algorithm_type::PR)
 				{
-					assert_msg(false, "Wait For PagerRank In GPU_EXECUTION_MODEL");
+					PR_SPACE::pr_device<CGgraphEngine>(*this, nBlock, deviceId);
 				}
 				else
 				{
-					assert_msg(false, "graphProcessDevice 时, 发现未知算法");
+					assert_msg(false, "graphProcessDevice ");
 				}
 				itee ++;
 				//Msg_info("The [%d] GPU Finish The (%d) Kernel", deviceId, itee++);			
@@ -1752,7 +1629,7 @@ private:
 			Msg_info("The GPU[%d] Workload-Kernel Finish, Used time: %.2lf (ms)", deviceId, deviceTime.get_time_ms());
 			#endif
 
-			//> 3. Trasfer The Result To The Host
+		
 			#ifdef CGGRAPHENGINE_DETAIL_DEBUG
 			deviceTime.start();		
 			#endif	
@@ -1761,7 +1638,7 @@ private:
 			Msg_info("The GPU[%d] Result Transfer, Used time: %.2lf (ms)", deviceId, deviceTime.get_time_ms());
 			#endif	
 
-			//> 4. Wait To WakeUp
+			
 			wakeupDevice_mutex.lock();
 			wakeupDevice[deviceId] = 0;
 			wakeupDevice_mutex.unlock();
@@ -1783,7 +1660,7 @@ private:
 
 		if(useDeviceNum == 2)
 		{
-			// First,deviceReduce
+			
 			omp_parallel_for(int vertexId =0; vertexId < noZeroOutDegreeNum; vertexId++)
 			{
 				vertex_data_type msg = vertexValue_temp_host[1][vertexId];
@@ -1794,7 +1671,7 @@ private:
 				}
 			} 	
 
-			// Second, Reduce
+			
 			#pragma omp parallel reduction(+:activeNum_device_total)
 			{
 				count_type threadId = omp_get_thread_num();

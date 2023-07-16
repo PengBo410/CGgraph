@@ -1,7 +1,7 @@
 #pragma once
 
-#define CUDA_INCLUDE_TEMP  //这里我们自定义一个全路径，避免VSCode的红色波浪线
-                           //但是这个需要根据自己的服务器路径配置，直接取消定义也不会错误
+#define CUDA_INCLUDE_TEMP  
+                           
 
 #ifdef CUDA_INCLUDE_TEMP
 

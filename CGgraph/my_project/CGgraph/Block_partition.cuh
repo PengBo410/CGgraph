@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Basic/basic_include.cuh"
 
 #define BLOCK_PARTITION_CHECK
 
@@ -19,7 +18,7 @@ public:
 
     Algorithm_type algorithm;
 
-    count_type segment = std::numeric_limits<uint16_t>::max() * 10 * 3; //每个blcok中包含的vertex数量
+    count_type segment = std::numeric_limits<uint16_t>::max() * 10 * 3; 
     //count_type segment = 4;
     count_type partition = 0;
     
@@ -39,7 +38,7 @@ public:
         vertex_id_type min_dest = std::numeric_limits<vertex_id_type>::max();
         vertex_id_type max_dest = 0;
 
-        uint64_t capacity = 0;//占用的容量
+        uint64_t capacity = 0;
 
         count_type block_x = 0;
         count_type block_y = 0;
@@ -48,7 +47,7 @@ public:
 
     tbb::concurrent_vector<tbb::concurrent_vector<Block_type>> block_vec_2d;
 
-    dense_bitset bitmap_allBlock; //2D用1D寸
+    dense_bitset bitmap_allBlock; 
     count_type** vertexNum_allBlock;
     countl_type** edgeNum_allBlock;
 
@@ -58,12 +57,12 @@ public:
 
     struct Block_result_type{
 
-        dense_bitset bitmap_allBlock; //2D用1D寸
+        dense_bitset bitmap_allBlock; 
 
         count_type** vertexNum_allBlock;
         countl_type** edgeNum_allBlock;
 
-        countl_type*** csr_offset_allBlock;// [行][列](array)
+        countl_type*** csr_offset_allBlock;
         vertex_id_type*** csr_dest_allBlock;
         edge_data_type*** csr_weight_allBlock;
 
@@ -100,7 +99,7 @@ public:
 
 		algorithm = algorithm_;
 
-        //> 初始化Graph
+        //> 
         timer constructTime;
 		initGraph();
 		Msg_info("Init-Graph: Used time: %.2lf (ms)", constructTime.get_time_ms());
@@ -209,19 +208,17 @@ private:
                         if(block.min_dest > edge_type.dest) Gemini_atomic::write_min(&block.min_dest, edge_type.dest);
                         if(block.max_dest < edge_type.dest) Gemini_atomic::write_max(&block.max_dest, edge_type.dest);
 
-                        //__sync_lock_test_and_set(&block.block_x, block_x);
-                        //__sync_lock_test_and_set(&block.block_y, block_y);
+                       
                         
                         block.block_edge_data.emplace_back(edge_type);
 
-                        // printf("GlobalId(%u-%u) -> LocalId%u-%u), BlockId(%u, %u) %u\n", 
-                        //     src, dest, edge_type.src, edge_type.dest, block_x, block_y, block.edgeNum_block);
+                        
                     }
                 }
             },
             VERTEXWORK_CHUNK
         );
-        Msg_info("Build Block 用时：%.2f(ms)", buildBlock_time.get_time_ms());
+        Msg_info("Build Block ：%.2f(ms)", buildBlock_time.get_time_ms());
 
         //Check
         #ifdef BLOCK_PARTITION_CHECK
@@ -232,8 +229,7 @@ private:
             countl_type local_edgeNum = 0;
             for(count_type blockColumn = 0; blockColumn < partition; blockColumn ++)
             {
-                Block_type block = block_vec_2d[blockRow][blockColumn];
-                //printf("Block(%u,%u). edgeNum_block = %u\n", block.block_x, block.block_y, block.edgeNum_block);
+                Block_type block = block_vec_2d[blockRow][blockColumn];           
                 local_edgeNum += block.edgeNum_block;
             }
             totalEdge += local_edgeNum;
@@ -243,7 +239,7 @@ private:
         #endif
 
 
-        //> 申请
+        //> 
         vertexNum_allBlock = new count_type* [partition];
         edgeNum_allBlock = new countl_type* [partition];
         csr_offset_allBlock = new countl_type** [partition];
@@ -262,9 +258,9 @@ private:
 
 
 
-        //检查Block的顶点的平衡性
+        //
         typedef std::pair<vertex_id_type, edge_data_type> nbr_pair_type;//first is dest，second is weight
-        tbb::concurrent_vector<tbb::concurrent_vector<nbr_pair_type>> adjlist;//针对单个block
+        tbb::concurrent_vector<tbb::concurrent_vector<nbr_pair_type>> adjlist;//block
         adjlist.resize(segment);
         int count = 0;
         for(count_type blockRow = 0; blockRow < partition; blockRow ++)
@@ -279,10 +275,7 @@ private:
                     continue;
                 } 
 
-                // Msg_info("(%d) Block[%u,%u]: block_edgeNum = %u, src:(%u, %u), dest:(%u, %u)", count, blockRow, blockColumn,
-                //     block.edgeNum_block,block.min_src, block.max_src, block.min_dest, block.max_dest);
-
-                //生成csr                
+                             
                 omp_parallel_for(countl_type edgeId = 0; edgeId < block.edgeNum_block; edgeId++)
                 {
                     Edge_type edge = block.block_edge_data[edgeId];
@@ -334,8 +327,7 @@ private:
                         csr_weight_allBlock[blockRow][blockColumn][offset + j] = nbr[j].second;
                     }
                 }
-
-                //printf("BLOCK[%u, %u] 完成\n", blockRow, blockColumn);           
+          
                 for(vertex_id_type vertexId = 0; vertexId < segment; vertexId ++)
                 {
                     adjlist[vertexId].clear();
@@ -348,7 +340,6 @@ private:
 
         //> check
         // #ifdef BLOCK_PARTITION_CHECK
-        // // 打印下
         // for(count_type blockRow = 0; blockRow < partition; blockRow ++)
         // {           
         //     for(count_type blockColumn = 0; blockColumn < partition; blockColumn ++)

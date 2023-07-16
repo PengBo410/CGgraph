@@ -1,7 +1,6 @@
 #pragma once
 
 
-#include "Basic/basic_include.cuh"
 #include <math.h>
 #include <sys/mman.h>
 #include <thread>
@@ -30,14 +29,13 @@ public:
 	//PUSH
 	dense_bitset active_in;
 	dense_bitset active_out;
-	DoubleBuffer<dense_bitset> active; //active_in与active_out最终封装到DoubleBuffer
+	DoubleBuffer<dense_bitset> active; 
 
     offset_type* outDegree;
 
 	count_type ite = 0;
 
 	// Block
-	//count_type segmentSize = 1966050 * 2;
 	count_type segmentSize = 6200000;
 	count_type partition = 0;
 	std::vector<std::vector<countl_type>> blockDis;
@@ -47,7 +45,7 @@ public:
 		vertexNum(0),
 		edgeNum(0)
 	{
-		//获得原图数据的CSR
+	
 		vertexNum = csrResult.vertexNum;
 		edgeNum = csrResult.edgeNum;
 		csr_offset = csrResult.csr_offset;
@@ -58,19 +56,19 @@ public:
 		taskSteal = new TaskSteal();
         taskSteal_align64 = new TaskSteal();
 
-		//构建outDegree
+		
 		outDegree = new offset_type[vertexNum];
 		for (size_t vertexId = 0; vertexId < vertexNum; vertexId++)
 		{
 			outDegree[vertexId] = csr_offset[vertexId + 1] - csr_offset[vertexId];
 		}
 
-		// 分配vertexValue和active
+		
 		allocate_vertexValueAndActive();
 		Msg_info("allocate_vertexValueAndActive 完成");
 
 #ifdef ACTIVE_BLOCK
-		//构建block
+		
 		partition =(vertexNum + segmentSize - 1 ) / segmentSize;
         count_type block_num = partition * partition;
         Msg_finish("segmentSize: %u, 1-D: %u, 2-D: %u", segmentSize, partition, block_num);
@@ -88,7 +86,7 @@ public:
 
 	double graphProcess(Algorithm_type algorithm, vertex_id_type root = 0)
 	{
-		//初始化Algorithm
+		
 		init_algorithm(algorithm, root);
 
 		ite = 0;
@@ -112,7 +110,7 @@ public:
 				}
 			}
 
-			//【处理】
+			
 			timer single_time;
 			activeNum = taskSteal->threeSatge_noNUMA<ActiveBlock>(*this,
 				[&](vertex_id_type vertex, offset_type nbr_start, offset_type nbr_end)
@@ -123,53 +121,48 @@ public:
 						return SSSP_SPACE::sssp_noNuma<ActiveBlock>(*this, vertex, nbr_start, nbr_end);
 					else
 					{
-						assert_msg(false, "threeSatge_noNUMA 错误");
+						assert_msg(false, "threeSatge_noNUMA");
 						 return static_cast<count_type>(0);
 					}
 						
 				}
 			);
 
-			std::cout << "\t[Single]：第(" << ite << ")次迭代完成, time = (" << single_time.current_time_millis()
-				<< " ms), active = (" << activeNum << ")" << std::endl;
+			
 #ifdef ACTIVE_BLOCK
 
-			if(ite >=3 && ite<=5)
+			countl_type totalEdgesIte = 0;
+			for (count_type blockRow = 0; blockRow < partition; blockRow++)
 			{
-				// 计算总边数
-				countl_type totalEdgesIte = 0;
-				for(count_type blockRow = 0; blockRow < partition; blockRow ++)
+				for (count_type blockColumn = 0; blockColumn < partition; blockColumn++)
 				{
-					for(count_type blockColumn = 0; blockColumn < partition; blockColumn ++)
-					{
-						totalEdgesIte += blockDis[blockRow][blockColumn];
-					}
+					totalEdgesIte += blockDis[blockRow][blockColumn];
 				}
-
-
-
-				std::string outFile = "/home/pengjie/vs_log/twitter2010-MY_IMAX_BFS_IN_(10-10)_ite" + std::to_string(ite) +".csv";
-				std::ofstream out_file;
-				out_file.open(outFile.c_str(),
-					std::ios_base::out | std::ios_base::binary);//Opens as a binary read and writes to disk
-				if (!out_file.good()) assert_msg(false, "Error opening out-file: %s", outFile.c_str());
-
-
-				for(count_type blockRow = 0; blockRow < partition; blockRow ++)
-				{
-					std::stringstream ss_log;
-					ss_log.clear();
-					for(count_type blockColumn = 0; blockColumn < partition; blockColumn ++)
-					{
-						out_file << ((double)blockDis[blockRow][blockColumn] / totalEdgesIte) * 100 << ",";
-						
-						blockDis[blockRow][blockColumn] = 0;
-
-					}
-					out_file << std::endl;
-				}
-				out_file.close();
 			}
+
+
+
+			std::string outFile = "---" + std::to_string(ite) + ".csv";
+			std::ofstream out_file;
+			out_file.open(outFile.c_str(),
+				std::ios_base::out | std::ios_base::binary);//Opens as a binary read and writes to disk
+			if (!out_file.good()) assert_msg(false, "Error opening out-file: %s", outFile.c_str());
+
+
+			for (count_type blockRow = 0; blockRow < partition; blockRow++)
+			{
+				std::stringstream ss_log;
+				ss_log.clear();
+				for (count_type blockColumn = 0; blockColumn < partition; blockColumn++)
+				{
+					out_file << ((double)blockDis[blockRow][blockColumn] / totalEdgesIte) * 100 << ",";
+
+					blockDis[blockRow][blockColumn] = 0;
+
+				}
+				out_file << std::endl;
+			}
+			out_file.close();
 			
 #endif
 
@@ -202,7 +195,7 @@ private:
 
 		active_in.resize(vertexNum);
 		active_out.resize(vertexNum);
-		active.setDoubleBuffer(active_in, active_out);//封装到DoubleBuffer中
+		active.setDoubleBuffer(active_in, active_out);
 
     }
 
@@ -217,7 +210,7 @@ private:
 			active.in().clear_memset();
 			active.out().clear_memset();
 
-			//初始化root		
+					
 			vertexValue[root] = 0;
 			active.in().set_bit(root);					
 		}
@@ -241,7 +234,7 @@ private:
 		}
 		else
 		{
-			assert_msg(false, "init_algorithm 错误");
+			assert_msg(false, "init_algorithm error");
 		}
 	}
 
@@ -256,7 +249,6 @@ private:
 			omp_parallel
 			{
 				count_type threadId = omp_get_thread_num();
-				//本Socket的线程共同完成本socket的active clear
 				size_t cur = WORD_OFFSET(taskSteal_align64->thread_state[threadId]->cur);
 				size_t end = WORD_OFFSET(taskSteal_align64->thread_state[threadId]->end);
 				memset(active.out().array + cur, 0, sizeof(size_t) * (end - cur));
@@ -267,7 +259,6 @@ private:
 			omp_parallel
 			{
 				count_type threadId = omp_get_thread_num();
-				//本Socket的线程共同完成本socket的active clear
 				size_t cur = WORD_OFFSET(taskSteal_align64->thread_state[threadId]->cur);
 				size_t end = WORD_OFFSET(taskSteal_align64->thread_state[threadId]->end);
 
@@ -276,7 +267,7 @@ private:
 		}
 		else
 		{
-			assert_msg(false, "clear_active_out 错误");
+			assert_msg(false, "clear_active_out error");
 		}
 	}
 

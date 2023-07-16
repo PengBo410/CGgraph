@@ -40,12 +40,11 @@ public:
 		Msg_info("zeroOutDegreeNum = %zu, noZeroOutDegreeNum = %zu", 
 			static_cast<uint64_t>(zeroOutDegreeNum), static_cast<uint64_t>(noZeroOutDegreeNum));
 
-        //> 初始化Graph
         timer constructTime;
 		initGraph();
 		Msg_info("Init-Graph: Used time: %.2lf (ms)", constructTime.get_time_ms());
 
-        //> 构建inDegree
+     
         constructTime.start();
         compute_inDegree();
         Msg_info("Compute-inDegree: Used time: %.2lf (ms)", constructTime.get_time_ms());
@@ -157,9 +156,7 @@ private:
     }
 
 public:
-    /* **********************************************************
-	 * Func: Host Function , 获取最大的前n个inDegree的vertexId和值
-	 * **********************************************************/
+    
     void sortIndegree(uint64_t printfNum = 100)
     {
         struct In_type{
@@ -184,7 +181,7 @@ public:
         std::sort(inDegree_vec.begin(), inDegree_vec.end(),
             [&](In_type& a, In_type& b)-> bool
             {
-                if(a.indegreeValue > b.indegreeValue) return true; // 如果定义为a.indegreeValue >= b.indegreeValue,会出现:Segmentation fault (core dumped)错误
+                if(a.indegreeValue > b.indegreeValue) return true; 
                 else return false;
             }
         );
@@ -194,7 +191,7 @@ public:
         for(uint64_t i =0; i < printfNum; i++)
         {
             printf("(%2zu): id (%u) - (in)Degree (%u) -> {%u}\n", i,
-                 inDegree_vec[i].vertexId, inDegree_vec[i].indegreeValue, inDegree_vec[i].vertexId/1966050);
+                 inDegree_vec[i].vertexId, inDegree_vec[i].indegreeValue, inDegree_vec[i].vertexId/DEF);
         }
 
     }

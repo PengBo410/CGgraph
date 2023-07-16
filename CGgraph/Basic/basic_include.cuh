@@ -18,7 +18,6 @@
 #include "Thread/atomic.hpp"
 
 #include "Time/time.hpp"
-//#include "Time/time_cpu.hpp"
 #include "Time/time_gpu.cuh"
 
 #include "Bitmap/dense_bitset.hpp"

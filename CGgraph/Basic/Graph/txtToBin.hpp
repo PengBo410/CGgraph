@@ -10,22 +10,14 @@
 #include <string>
 #include <sstream> // std::stringstream
 
-/*****************************************************************************
- * 解析的格式为：
- * 101     102
- * 101     104
- * update on 2022-10-30 添加了数据类型容量检测, 适配大图如clueweb12
- * 修改：将添加边的范围从[1,20)变成[1,100))
- * TODO:考虑并行版本，读取不同的行，写到多个中间文件中(使用的线程数个)，然后合并
- *      添加重复边检测
- *****************************************************************************/
+
 template <typename vertex_id_type, typename edge_data_type>
 size_t convert2binaryAddEdge(
 	std::string inputFile,
 	std::string outputFile
 ) {
 	std::ifstream in_file(inputFile.c_str(),
-		std::ios_base::in | std::ios_base::binary);//以二进制读的方式打开,并写入内存
+		std::ios_base::in | std::ios_base::binary);
 	if (!in_file.good()) {
 		std::cout << "[convert2binary]Error opening in-file: " << inputFile << std::endl;
 		assert(false);
@@ -33,7 +25,7 @@ size_t convert2binaryAddEdge(
 	}
 
 	std::ofstream out_file(outputFile.c_str(),
-		std::ios_base::out | std::ios_base::binary);//以二进制读的方式打开,并写入磁盘
+		std::ios_base::out | std::ios_base::binary);
 	if (!out_file.good()) {
 		std::cout << "[convert2binary]Error opening out-file: " << outputFile << std::endl;
 		assert(false);
@@ -58,7 +50,6 @@ size_t convert2binaryAddEdge(
 		strm >> sourceId_;
 		if (std::numeric_limits<vertex_id_type>::max() <= sourceId_)
 		{
-			printf("定义的vertex_id_type不足以表示sourceId = %lu (%lu 行)\n", sourceId_, linecount);
 			assert(0);
 		}
 		vertex_id_type sourceId = static_cast<vertex_id_type>(sourceId_);
@@ -69,7 +60,6 @@ size_t convert2binaryAddEdge(
 			strm >> destId_;
 			if (std::numeric_limits<vertex_id_type>::max() <= destId_)
 			{
-				printf("定义的vertex_id_type不足以表示destId_ = %lu (%lu 行)\n", destId_, linecount);
 				assert(0);
 			}
 			vertex_id_type destId = static_cast<vertex_id_type>(destId_);
@@ -94,23 +84,19 @@ size_t convert2binaryAddEdge(
 			out_file.write((char*)(&sourceId), sizeof(vertex_id_type));
 			out_file.write((char*)(&destId), sizeof(vertex_id_type));
 
-			//添加边(刚开始我们定义的范围是[1,20), 现在变成了[1,100))
-			edge_data_type edge_data = (rand() % 99) + 1;//[1,100) //要取得[a,b)的随机整数，使用(rand() % (b-a))+ a;
+			edge_data_type edge_data = (rand() % 99) + 1;
 			out_file.write((char*)(&edge_data), sizeof(edge_data_type));
 
 			effectiveLine++;
 		}
 
 		linecount++;
-		if (linecount % 100000000 == 0) printf("已处理完(%lu)行\n", linecount);//每1亿行打印一次
+		if (linecount % 100000000 == 0) printf("-> (%lu) lines\n", linecount);
 	}
 
 	in_file.close();
 	out_file.close();
 
-	std::cout << "共有【" << linecount << "】行从文件 <" << inputFile << "> 以二进制形式写入到 <" << outputFile << "> 文件中！\n"
-		<< "其中有效的行数(总边数)为：【" << effectiveLine << "】行," << "总顶点数为：[" << (maxVid + 1) << "]\n"
-		<< "用时：" << ti.current_time() << "(秒)。" << std::endl;
 
 	return (maxVid + 1);
 }

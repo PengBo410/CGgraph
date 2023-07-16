@@ -46,7 +46,7 @@ public:
 
 public:
 	/*======================================================================================*
-	 *                                   【构造函数】
+	 *                                   【con】
 	 *======================================================================================*/
 	ThreadState()
 	{
@@ -86,12 +86,12 @@ public:
 	void log_threadTask()
 	{
 		std::stringstream ss;
-		ss << "\n打印各个线程的工作数：\n";
+		ss << "\nprint：\n";
 		for (count_type threadId = 0; threadId < ThreadNum; threadId++)
 		{
 			ss << "thread[" << std::setw(2) << threadId
-				<< "]的task数 (" << std::setw(10) << (thread_state[threadId]->end - thread_state[threadId]->cur)
-				<< "), 范围: [" << std::setw(10) << thread_state[threadId]->cur
+				<< "]task num (" << std::setw(10) << (thread_state[threadId]->end - thread_state[threadId]->cur)
+				<< "), range: [" << std::setw(10) << thread_state[threadId]->cur
 				<< "," << std::setw(10) << thread_state[threadId]->end
 				<< ")" << std::endl;
 		}

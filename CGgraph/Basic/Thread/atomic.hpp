@@ -6,9 +6,7 @@
 #include <assert.h>
 
 
-/* ***************************************************
- * 为了支持double 和 float，重写cas
- * **************************************************/
+
 template <class T>
 inline bool cas(T* ptr, T old_val, T new_val)
  {

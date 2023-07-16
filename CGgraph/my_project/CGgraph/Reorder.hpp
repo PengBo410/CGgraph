@@ -33,8 +33,8 @@ private:
      bool isToyGraph = false;
 
 public:
-	//邻居 -> 用于生成新的图
-	typedef std::pair<vertex_id_type, edge_data_type> nbr_pair_type;//first是dest，second是weight
+	
+	typedef std::pair<vertex_id_type, edge_data_type> nbr_pair_type;
 	typedef std::vector<nbr_pair_type> neighbor_type;
 	std::vector<neighbor_type> adjlist_sort;
 
@@ -67,11 +67,11 @@ public:
             sort_vec.resize(vertexNum);
             sortDegree(SortDegree::OUTDEGREE);
             std::vector<vertex_id_type> order;
-			std::vector<count_type> additionInfo;// 存储outDegree为0顶点的个数
+			std::vector<count_type> additionInfo;
 
             timer t;
             MY_BFS_OUT(order, additionInfo);
-            Msg_info("MY_BFS_OUT 执行完成！用时：%f (ms)", t.get_time_ms());
+            Msg_info("MY_BFS_OUT, time：%f (ms)", t.get_time_ms());
 			Msg_info("MY_BFS_OUT zeroDegreenNum = %u (%.2f%%)", additionInfo[0], ((double)additionInfo[0] / vertexNum) * 100);
 
              if(isToyGraph)
@@ -84,28 +84,28 @@ public:
             }
 
             saveCSR_reorderFile(order, additionInfo,
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_csrOffset_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_csrDest_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_csrWeight_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_old2new.txt",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_addition.txt"
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "..."
             );
             
             std::vector<vertex_id_type>().swap(order);
-			Msg_info("MY_BFS_OUT 的order已经释放");
+			Msg_info("MY_BFS_OUT order clear()");
         }
 
         //> MY_BFS_IN
         else if(orderMethod == OrderMethod::MY_BFS_IN)
         {
             sort_vec.resize(vertexNum);
-            sortDegree(SortDegree::OUTDEGREE);//先安排度大的顶点
+            sortDegree(SortDegree::OUTDEGREE);
             std::vector<vertex_id_type> order;
-			std::vector<count_type> additionInfo;// 存储outDegree为0顶点的个数
+			std::vector<count_type> additionInfo;
 
             timer t;
             MY_BFS_IN(order, additionInfo);
-            Msg_info("MY_BFS_IN 执行完成！用时：%f (ms)", t.get_time_ms());
+            Msg_info("MY_BFS_IN, time：%f (ms)", t.get_time_ms());
 			Msg_info("MY_BFS_IN zeroDegreenNum = %u (%.2f%%)", additionInfo[0], ((double)additionInfo[0] / vertexNum) * 100);
 
             if(isToyGraph)
@@ -118,28 +118,28 @@ public:
             }
 
             saveCSR_reorderFile(order, additionInfo,
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_IN_csrOffset_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_IN_csrDest_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_IN_csrWeight_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_IN_old2new.txt",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_IN_addition.txt"
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "..."
             );
             
             std::vector<vertex_id_type>().swap(order);
-			Msg_info("MY_BFS_IN 的order已经释放");
+			Msg_info("MY_BFS_IN order clear");
         }
 
         //> MY_BFS_OUT_IN
         else if(orderMethod == OrderMethod::MY_BFS_OUT_IN)
         {
             sort_vec.resize(vertexNum);
-            sortDegree(SortDegree::OUTDEGREE);//先安排度大的顶点
+            sortDegree(SortDegree::OUTDEGREE);
             std::vector<vertex_id_type> order;
-			std::vector<count_type> additionInfo;// 存储outDegree为0顶点的个数
+			std::vector<count_type> additionInfo;
 
             timer t;
             MY_BFS_OUT_IN(order, additionInfo);
-            Msg_info("MY_BFS_OUT_IN 执行完成！用时：%f (ms)", t.get_time_ms());
+            Msg_info("MY_BFS_OUT_IN time：%f (ms)", t.get_time_ms());
 			Msg_info("MY_BFS_OUT_IN zeroDegreenNum = %u (%.2f%%)", additionInfo[0], ((double)additionInfo[0] / vertexNum) * 100);
 
             if(isToyGraph)
@@ -152,28 +152,28 @@ public:
             }
 
             saveCSR_reorderFile(order, additionInfo,
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_IN_csrOffset_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_IN_csrDest_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_IN_csrWeight_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_IN_old2new.txt",
-                BASE_GRAPHFILE_PATH + graph + "/MY_BFS_OUT_IN_addition.txt"
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "..."
             );
             
             std::vector<vertex_id_type>().swap(order);
-			Msg_info("MY_BFS_OUT_IN 的order已经释放");
+			Msg_info("MY_BFS_OUT_IN order finish");
         }
 
         //> MY_IMAX_BFS_IN
         else if(orderMethod == OrderMethod::MY_IMAX_BFS_IN)
         {
             sort_vec.resize(vertexNum);
-            sortDegree(SortDegree::INDEGREES);//先安排入度大的顶点
+            sortDegree(SortDegree::INDEGREES);
             std::vector<vertex_id_type> order;
-			std::vector<count_type> additionInfo;// 存储outDegree为0顶点的个数
+			std::vector<count_type> additionInfo;
 
             timer t;
-            MY_BFS_IN(order, additionInfo); // 只要改变sortDegree按照in排序，就ok
-            Msg_info("MY_IMAX_BFS_IN 执行完成！用时：%f (ms)", t.get_time_ms());
+            MY_BFS_IN(order, additionInfo); 
+            Msg_info("MY_IMAX_BFS_IN time：%f (ms)", t.get_time_ms());
 			Msg_info("MY_IMAX_BFS_IN zeroDegreenNum = %u (%.2f%%)", additionInfo[0], ((double)additionInfo[0] / vertexNum) * 100);
 
             if(isToyGraph)
@@ -186,23 +186,23 @@ public:
             }
 
             saveCSR_reorderFile(order, additionInfo,
-                BASE_GRAPHFILE_PATH + graph + "/MY_IMAX_BFS_IN_csrOffset_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_IMAX_BFS_IN_csrDest_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_IMAX_BFS_IN_csrWeight_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/MY_IMAX_BFS_IN_old2new.txt",
-                BASE_GRAPHFILE_PATH + graph + "/MY_IMAX_BFS_IN_addition.txt"
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "..."
             );
             
             std::vector<vertex_id_type>().swap(order);
-			Msg_info("MY_IMAX_BFS_IN 的order已经释放");
+			Msg_info("MY_IMAX_BFS_IN order clear");
         }
 
         else if(orderMethod == OrderMethod::IN_DEGREE_DEC)
         {
             sort_vec.resize(vertexNum);
-            sortDegree(SortDegree::INDEGREES);//先安排入度大的顶点
+            sortDegree(SortDegree::INDEGREES);
             std::vector<vertex_id_type> order;
-            std::vector<count_type> additionInfo;// 存储outDegree为0顶点的个数
+            std::vector<count_type> additionInfo;
 
             timer t;
             order.resize(vertexNum);
@@ -210,7 +210,7 @@ public:
             {
                 order[vertexId] = sort_vec[vertexId].vertex_id;
             }
-            Msg_info("IN_DEGREE_DEC 执行完成！用时：%f (ms)", t.get_time_ms());
+            Msg_info("IN_DEGREE_DEC time：%f (ms)", t.get_time_ms());
 
             if(isToyGraph)
             {
@@ -222,15 +222,15 @@ public:
             }
 
             saveCSR_reorderFile(order, additionInfo,
-                BASE_GRAPHFILE_PATH + graph + "/IN_DEGREE_DEC_csrOffset_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/IN_DEGREE_DEC_csrDest_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/IN_DEGREE_DEC_csrWeight_u32.bin",
-                BASE_GRAPHFILE_PATH + graph + "/IN_DEGREE_DEC_old2new.txt",
-                BASE_GRAPHFILE_PATH + graph + "/IN_DEGREE_DEC_addition.txt"
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "...",
+                BASE_GRAPHFILE_PATH + graph + "..."
             );
 
             std::vector<vertex_id_type>().swap(order);
-			Msg_info("IN_DEGREE_DEC 的order已经释放");
+			Msg_info("IN_DEGREE_DEC  order clear");
             
         }
 
@@ -247,10 +247,7 @@ public:
 
 
 private:
-    /*====================================================================================*
-	 *                                    【排序Degree】
-	 * 从allocateSort中分离出来，方便自定义排序规则
-	 *====================================================================================*/
+    
 	void sortDegree(SortDegree sortDegree)
 	{       
 
@@ -273,7 +270,7 @@ private:
             }
             else
             {
-                assert_msg(false, "暂不支持当前的排序方法");
+                assert_msg(false, "");
             }	            
             sort_vec[vertexId] = vid_degree;
 
@@ -302,11 +299,11 @@ private:
 
         std::vector<vertex_id_type> tmp;
 		vertex_id_type now;
-		std::vector<vertex_id_type> order; //表示RCM的中间order，返回的不是最终的RCM-order
+		std::vector<vertex_id_type> order; 
 		std::vector<vertex_id_type> zeroDegree;
         for (count_type k=0; k<vertexNum; k++)
 		{
-			vertex_id_type temp = sort_vec[k].vertex_id;//因为之前是按大到小排列的，所以此处第一个为最大的
+			vertex_id_type temp = sort_vec[k].vertex_id;
 			if (BFSflag[temp] == false)
 			{
 				if (outDegree[temp] == 0)
@@ -383,11 +380,11 @@ private:
 
         std::vector<vertex_id_type> tmp;
 		vertex_id_type now;
-		std::vector<vertex_id_type> order; //表示RCM的中间order，返回的不是最终的RCM-order
+		std::vector<vertex_id_type> order; 
 		std::vector<vertex_id_type> zeroDegree;
         for (count_type k=0; k<vertexNum; k++)
 		{
-			vertex_id_type temp = sort_vec[k].vertex_id;//因为之前是按大到小排列的，所以此处第一个为最大的
+			vertex_id_type temp = sort_vec[k].vertex_id;
 			if (BFSflag[temp] == false)
 			{
 				if (outDegree[temp] == 0)
@@ -465,11 +462,11 @@ private:
 
         std::vector<vertex_id_type> tmp;
 		vertex_id_type now;
-		std::vector<vertex_id_type> order; //表示RCM的中间order，返回的不是最终的RCM-order
+		std::vector<vertex_id_type> order; 
 		std::vector<vertex_id_type> zeroDegree;
         for (count_type k=0; k<vertexNum; k++)
 		{
-			vertex_id_type temp = sort_vec[k].vertex_id;//因为之前是按大到小排列的，所以此处第一个为最大的
+			vertex_id_type temp = sort_vec[k].vertex_id;
 			if (BFSflag[temp] == false)
 			{
 				if (outDegree[temp] == 0)
@@ -543,7 +540,6 @@ private:
     {
         if(isToyGraph)
         {
-            // 如果文件不存在或者不能访问指定的权限，则返回-1.
             bool exist_csrOffsetFile = (access(csrOffsetFile.c_str(), F_OK) >= 0);
             bool exist_csrDestFile = (access(csrOffsetFile.c_str(), F_OK) >= 0);
             bool exist_csrWeightFile = (access(csrOffsetFile.c_str(), F_OK) >= 0);
@@ -552,7 +548,7 @@ private:
 
             if (exist_csrOffsetFile && exist_csrDestFile && exist_csrWeightFile && exist_old2newFile && exist_addition)
             {
-                Msg_info("vertexOrder 文件已经存在, 将不在重新写入");
+                Msg_info("vertexOrder error");
                 return;
             }
         }       
@@ -565,22 +561,18 @@ private:
 
 
 
-        //=========================================
-        //依据outDegree_sort提前为adjlist_sort分配空间
-        //=========================================
+       
         timer t;
         adjlist_sort.resize(vertexNum);
-        //#pragma omp parallel for
+       
         for (size_t vertexId = 0; vertexId < vertexNum; vertexId++)
         {
-            // vertexId 为新值，
-            vertex_id_type oldId = order[vertexId];//order相当于new2old
+          
+            vertex_id_type oldId = order[vertexId];
             count_type degree_old = csr_offset[oldId + 1] - csr_offset[oldId];
             adjlist_sort[vertexId].resize(degree_old);
-            //printf("newId = %u, oldId = %u, degree_old = %u\n", vertexId, oldId, degree_old);
+            
         }
-        Msg_info("adjlist_sort_another <并行>分配空间用时：%.2lf (ms)", t.get_time_ms());
-
         
         // printf("\n");
         // for (size_t i = 0; i < vertexNum; i++)
@@ -589,9 +581,7 @@ private:
         // }
         
 
-        //=========================================
-        //利用原图的CSR并行载入
-        //=========================================
+        
         TaskSteal* taskSteal = new TaskSteal();// compute task
 	    size_t totalWorkloads = 0;
 
@@ -603,7 +593,7 @@ private:
                 size_t length = VERTEXWORK_CHUNK;
                 if (end >= vertexNum) length = vertexNum - current;
 
-                // 拿到的一组顶点中的每个顶点
+                
                 for (size_t in = 0; in < length; in++)
                 {
                     vertex_id_type newId = current + in;
@@ -616,7 +606,7 @@ private:
                     {
                         vertex_id_type dest = csr_dest[i];
                         edge_data_type weight = csr_weight[i];
-                        //printf("new = %u, old = %u, nbr = %u, newNbr = %u\n",newId, oldId, dest, old2new[dest] );
+                        
                         adjlist_sort[newId][i - nbr_first] = std::make_pair(old2new[dest], weight);//
                     }
                 }
@@ -625,9 +615,7 @@ private:
 	    Msg_info("nbrSort_taskSteal 用时：%.2lf(ms)", sort_time.get_time_ms());	
 
 
-        //=========================================
-        // 生成新的文件
-        //=========================================
+        
         t.start();
         //Build csrOffset
         countl_type* csr_offset_ = new countl_type[vertexNum + 1];
@@ -652,7 +640,7 @@ private:
             }
         }
 
-        // 将Toy文件打印到控制台
+        
         if(isToyGraph)
         {
             printf("=> csr_offset:\n");
@@ -674,7 +662,7 @@ private:
             printf("\n");
         }
 
-        // 将Real-Word写入到文件中
+        
         else
         {
             save_binArray<countl_type>(csrOffsetFile, csr_offset_, vertexNum + 1);
@@ -683,7 +671,7 @@ private:
 
             //old2new
             std::ofstream out_file_old2new(old2newFile.c_str(),
-                std::ios_base::out | std::ios_base::binary);//以二进制读的方式打开,并写入磁盘
+                std::ios_base::out | std::ios_base::binary);
             if (!out_file_old2new.good()) {
                 std::cout << "[old2new]Error opening out-file: " << old2newFile << std::endl;
                 assert(false);
@@ -693,14 +681,14 @@ private:
             {
                 out_file_old2new.write((char*)(&old2new[vertexId]), sizeof(vertex_id_type));
 
-                if ((vertexId != 0) && (vertexId % 100000000 == 0)) Msg_rate("[PROGRESS]: Reorder old2new(order/rank)文件写入已完成 %.2f%%", (double)vertexId / vertexNum * 100);
+                if ((vertexId != 0) && (vertexId % 100000000 == 0)) Msg_rate("[PROGRESS]: Reorder old2new(order/rank) %.2f%%", (double)vertexId / vertexNum * 100);
             }
-            Msg_rate("old2new(order/rank)文件写入已完成 100%, 用时: %f (ms)", t.get_time_ms());
+            Msg_rate("old2new(order/rank) 100%, : %f (ms)", t.get_time_ms());
             out_file_old2new.close();
 
             //addition
             std::ofstream out_file_addition(addition.c_str(),
-                std::ios_base::out | std::ios_base::binary);//以二进制读的方式打开,并写入磁盘
+                std::ios_base::out | std::ios_base::binary);
             if (!out_file_addition.good()) {
                 std::cout << "[old2new]Error opening out-file: " << addition << std::endl;
                 assert(false);
@@ -710,11 +698,11 @@ private:
             {
                 out_file_addition.write((char*)(&addition_vec[i]), sizeof(count_type));
             }
-            Msg_rate("addition文件写入已完成 100%, 用时: %f (ms)", t.get_time_ms());
+            Msg_rate("addition 100%, : %f (ms)", t.get_time_ms());
             out_file_addition.close();
         }
 
-		Msg_finish("SaveCSRtoFile Finsihed ! 用时： %.2lf (ms)", t.get_time_ms());
+		Msg_finish("SaveCSRtoFile Finsihed ! ： %.2lf (ms)", t.get_time_ms());
 
         csrResult_reorder.vertexNum = vertexNum;
         csrResult_reorder.edgeNum = edgeNum;

@@ -6,7 +6,7 @@
 
 #define ESC_START     "\033["
 #define ESC_END       "\033[0m"
-#define COLOR_ERROR   "31;48;1m"   //31:是红色
+#define COLOR_ERROR   "31;48;1m"   //31
 
 //#include <vector_types.h>
 
@@ -85,18 +85,6 @@ do{\
 #define __deviceSync {GY_CUDA_CHECK(cudaGetLastError()); GY_CUDA_CHECK(cudaDeviceSynchronize());}
 
 
-
-
-
-/*
-	device<<<10,256>>>();
-	GY_CUDA_CHECK(cudaGetLastError());
-	GY_CUDA_CHECK(cudaDeviceSynchronize());
-
-	printf("blockSize = %d\n", roundUp);// 2560
-	printf("gridDim.x = %d\n", gridDim.x);//nBlock = 10
-	printf("blockDim.x = %d\n", blockDim.x);//blockSize = 256
-*/
 
 
 #endif  // CUDA_CHECK_CUH

@@ -5,15 +5,14 @@
 #define TWO_LEVEL_CHECK
 
 #define SEGMENT_SIZE 1024 // 16 * 64
-#define SEGMENT_WORDNUM (SEGMENT_SIZE/WORDSIZE) // one Segment contain wordNum
+#define SEGMENT_WORDNUM (SEGMENT_SIZE/WORDSIZE) 
 
 #define BUCKET_NUM 4
 
 #define GPU_RESERVED_MEMORY 1024 * 1024 * 1024 
 
-#define MORE_BALANCE_PARTITION // Build the more Balance vertexNum_device and edgeNum_device among the GPUs
+#define MORE_BALANCE_PARTITION 
 
-#include "Basic/basic_include.cuh"
 #include "taskSteal.hpp"
 
 
@@ -68,11 +67,11 @@ public:
 	std::vector<uint32_t> segmentNum_device_vec; // The number of segment in each device
 	std::vector<dense_bitset> segmentId_device_vec; //  The id of segement in each device
 
-	std::vector<count_type> vertexNum_device_vec; //存放每个device上实际拥有的顶点数
-	std::vector<countl_type> edgeNum_device_vec; //存放每个device上实际拥有的边数
-	std::vector<countl_type*> csrOffset_device_vec; //存放每个device上csr_offset
-	std::vector<vertex_id_type*> csrDest_device_vec; //存放每个device上csr_dest
-	std::vector<edge_data_type*> csrWeight_device_vec; //存放每个device上csr_weight
+	std::vector<count_type> vertexNum_device_vec; //device vertices
+	std::vector<countl_type> edgeNum_device_vec; //device edges
+	std::vector<countl_type*> csrOffset_device_vec; //device csr_offset
+	std::vector<vertex_id_type*> csrDest_device_vec; //device csr_dest
+	std::vector<edge_data_type*> csrWeight_device_vec; //device csr_weight
 
 
 	struct Partition_type{
@@ -84,12 +83,12 @@ public:
 		std::vector<uint32_t> segmentNum_device_vec; // The number of segment in each device
 		std::vector<dense_bitset> segmentId_device_vec; //  The id of segement in each device
 
-		std::vector<count_type> vertexNum_device_vec; //存放每个device上实际拥有的顶点数
-		std::vector<countl_type> edgeNum_device_vec; //存放每个device上实际拥有的边数
+		std::vector<count_type> vertexNum_device_vec; 
+		std::vector<countl_type> edgeNum_device_vec; 
 
-		std::vector<countl_type*> csrOffset_device_vec; //存放每个device上csr_offset
-		std::vector<vertex_id_type*> csrDest_device_vec; //存放每个device上csr_dest
-		std::vector<edge_data_type*> csrWeight_device_vec; //存放每个device上csr_weight
+		std::vector<countl_type*> csrOffset_device_vec; 
+		std::vector<vertex_id_type*> csrDest_device_vec; 
+		std::vector<edge_data_type*> csrWeight_device_vec; 
 	};
 
 	bool canHoldAllSegment = true;
@@ -181,7 +180,7 @@ private:
 
 		bitmap_host.resize(noZeroOutDegreeNum);
 
-		//初始化device
+		//device
 		gpuInfo = new GPUInfo();
 		int _maxDeviceNum = gpuInfo->getDeviceNum();
 		assert_msg((useDeviceNum <= _maxDeviceNum),
@@ -347,11 +346,10 @@ private:
 	/* **********************************************************
 	 * Func: Host Func, Partition GPU 
 	 *       Partition Segment For Each GPU
-	 * //TODO: Currently, we think the GPUs have same memory
 	 * **********************************************************/
 	void partition_GPU()
 	{
-		// First, Get Each GPU's Global Memory
+		
 		std::vector<int64_t> memoryCapacity_vec(maxDeviceNum, 0);
 		for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
 		{
@@ -364,7 +362,7 @@ private:
 			Msg_info("The [%d] GPU's Global Memory Capacity: %.2lf (GB)", deviceId, (double)GB(memoryCapacity_vec[deviceId]));
 		}
 
-		// Second, Remove Necessary Storage Parts, including: vertexValue
+		
 		std::vector<uint64_t> memoryUsed_vec(maxDeviceNum, 0); // Used Memory Size
 		uint64_t memoryCapacity_total = 0;// In current Node, all GPUs avaliable memory
 		for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
@@ -380,7 +378,7 @@ private:
 		Msg_info("In Current Node, All GPUs Avaliable Memory: %.2lf (GB)", (double)GB(memoryCapacity_total));
 
 
-		// Third, Partition the segment in the Buckets in a round-robin fashion
+		
 		segmentNum_device_vec.resize(useDeviceNum, 0);
 		segmentId_device_vec.resize(useDeviceNum);
 		for (int deviceId = 0; deviceId < useDeviceNum; deviceId++)
@@ -390,10 +388,8 @@ private:
 		}
 		
 		timer  partition_time;
-		uint64_t reachedBucketId = 0;  // The bucketId when reaching all GPUs memory capacity		
-		//uint64_t reachedSegmentIndex_curBucket = 0; // The segment index in current bucket when reaching all GPUs memory capacity
-		for (uint64_t bucketId = 0; bucketId < BUCKET_NUM; bucketId++)//> 将小的给GPU
-		//for (int64_t bucketId = BUCKET_NUM - 1; bucketId >=0 ; bucketId--) //> 将大的给GPU
+		uint64_t reachedBucketId = 0; 	
+		for (uint64_t bucketId = 0; bucketId < BUCKET_NUM; bucketId++)
 		{
 			reachedBucketId = bucketId;
 			uint32_t segmentId = 0;
@@ -420,12 +416,12 @@ private:
 
 				memoryCapacity_vec[targetDevice] -= occupancyBytes;
 
-				//TODO: Currently, we think the GPUs have same memory
+				
 				if(memoryCapacity_vec[targetDevice] <= 0)
 				{
 					Msg_info("The GPUs Can Store Part Graph, ReachedBucketId = [%zu], Current Segment Index: (%u)",
 						bucketId, segmentId);
-					memoryCapacity_vec[targetDevice] += occupancyBytes; //加回去
+					memoryCapacity_vec[targetDevice] += occupancyBytes;
 					canHoldAllSegment = false;
 					
 					break;

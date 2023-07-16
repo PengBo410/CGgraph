@@ -18,20 +18,20 @@ namespace BFS_SPACE
 		{
             count_type vertexNum_segment = common[5]; // The number of vertices of each Segment 
             count_type wordNum_segment =  vertexNum_segment / WORDSIZE; // The number of words of each Segment 
-            count_type offset_index = threadId / vertexNum_segment; // 当前线程的偏移量所在的位置
-            count_type offset = trasfer_segment[offset_index];// 单前线程的偏移量;
+            count_type offset_index = threadId / vertexNum_segment; 
+            count_type offset = trasfer_segment[offset_index];
 
             WarpDonate::Thread_data_type thread_data = { 0, 0, 0 };
 			//CTA::Thread_data_type thread_data = { 0, 0, 0 };
 
-            //每个线层先确定自己要访问的active的位置
+            //
 			count_type wordIndex = WORD_OFFSET(threadId) + (common[7] * wordNum_segment);
 			count_type wordMod = WORD_MOD(threadId);
 			uint64_t blockData_64 = bitmap[wordIndex];
 
 			if ((blockData_64 >> wordMod) & 1)
 			{
-				// 需要注意的是： offload_offset的基本单位word, 所以一定记得乘以64
+				//
 				count_type chunkMod = threadId % vertexNum_segment;
 				vertex_id_type vertexId = offset * vertexNum_segment + chunkMod;
 
@@ -40,7 +40,7 @@ namespace BFS_SPACE
                 //assert(thread_data.nbrSize != 0);
 				thread_data.msg = vertexValue[vertexId];
 
-			}// 千万注意： 此处的 "}" 不能包住下面的代码, 否则就是：error 4 unspecified launch failure 以及 一晚上的辛苦
+			}
 
 			WarpDonate::schedule(thread_data,
 			//CTA::schedule(thread_data,
@@ -81,7 +81,6 @@ namespace BFS_SPACE
 
 	/****************************************************************************************************
 	 *                                    【WORKLIST_MODEL】
-	 * common[0]: worklist_count; common[1]: worklist_size; common[2]: vertexNum; common[3]: edgeNum
 	 ****************************************************************************************************/
 	__global__ void bfs_worklist_model_device(
 		offset_type* common, vertex_id_type* worklist_in, vertex_id_type* worklist_out,
@@ -139,16 +138,6 @@ namespace BFS_SPACE
 
 
 
-	/***********************************************************
-	 * Func: GraphHybird_opt 对应的BFS算法的 Device 实现
-	 *
-	 * [common]
-	 * [offload_offset]
-	 * [offload_data]
-	 * [csr_offset]
-	 * [csr_dest]
-	 * [vertexValue]
-	 ***********************************************************/
 	__global__ void bfs_hybird_device_pcie_opt(
 		offset_type* common, count_type* offload_offset, uint64_t* offload_data,
 		countl_type* csr_offset, vertex_id_type* csr_dest, vertex_data_type* vertexValue)
@@ -157,21 +146,21 @@ namespace BFS_SPACE
 
 		for (count_type threadId = threadIdx.x + blockIdx.x * blockDim.x; threadId < vertexNum_up; threadId += vertexNum_up)
 		{
-			offset_type wordNum_chunk = common[5];// 每个chunk拥有的word数
-			count_type vertexNum_chunk = wordNum_chunk * 64; // 每个chunk拥有的顶点数
-			count_type offset_index = threadId / vertexNum_chunk;//当前线程的偏移量所在的位置
-			count_type offset = offload_offset[offset_index];// 单前线程的偏移量;
+			offset_type wordNum_chunk = common[5];// 
+			count_type vertexNum_chunk = wordNum_chunk * 64; // 
+			count_type offset_index = threadId / vertexNum_chunk;//
+			count_type offset = offload_offset[offset_index];// 
 
 			WarpDonate::Thread_data_type thread_data = { 0, 0, 0 };
 
-			//每个线层先确定自己要访问的active的位置
+			
 			count_type wordIndex = WORD_OFFSET(threadId);
 			count_type wordMod = WORD_MOD(threadId);
 			uint64_t blockData_64 = offload_data[wordIndex];
 
 			if ((blockData_64 >> wordMod) & 1)
 			{
-				// 需要注意的是： offload_offset的基本单位word, 所以一定记得乘以64
+				
 				count_type chunkMod = threadId % vertexNum_chunk;
 				vertex_id_type vertexId = offset * 64 + chunkMod;
 
@@ -179,7 +168,7 @@ namespace BFS_SPACE
 				thread_data.nbrSize = csr_offset[vertexId + 1] - thread_data.offset_start;
 				thread_data.msg = vertexValue[vertexId];
 
-			}// 千万注意： 此处的 "}" 不能包住下面的代码, 否则就是：error 4 unspecified launch failure 以及 一晚上的辛苦
+			}
 
 			WarpDonate::schedule(thread_data,
 				[&](offset_type edge_cur, vertex_data_type msg)
@@ -197,16 +186,7 @@ namespace BFS_SPACE
 
 
 
-	/***********************************************************
-	 * Func: GraphHybird_opt 对应的BFS算法的 Device
-	 *
-	 * [graphHybird_opt.common_device]
-	 * [graphHybird_opt.offload_offset_device]
-	 * [graphHybird_opt.offload_data_device]
-	 * [graphHybird_opt.csr_offset_device]
-	 * [graphHybird_opt.csr_dest_device]
-	 * [graphHybird_opt.vertexValue_device]
-	 ***********************************************************/
+	
 	template<typename GraphHybird_opt>
 	void bfs_hybird_pcie_opt(GraphHybird_opt& graphHybird_opt, const count_type nBlock)
 	{
@@ -236,36 +216,34 @@ namespace SSSP_SPACE
 
 		for (count_type threadId = threadIdx.x + blockIdx.x * blockDim.x; threadId < vertexNum_up; threadId += vertexNum_up)
 		{
-            count_type vertexNum_segment = common[5]; // The number of vertices of each Segment  (1024)
-            count_type wordNum_segment =  vertexNum_segment / WORDSIZE; // The number of words of each Segment (16)
-            count_type offset_index = threadId / vertexNum_segment; // 当前线程的偏移量所在的位置
-            count_type segmentId = trasfer_segment[offset_index];// 单前线程的偏移量;
+            count_type vertexNum_segment = common[5]; 
+            count_type wordNum_segment =  vertexNum_segment / WORDSIZE; 
+            count_type offset_index = threadId / vertexNum_segment;
+            count_type segmentId = trasfer_segment[offset_index];
 
 			
 
             WarpDonate::Thread_data_type thread_data = { 0, 0, 0 };
 
-            //每个线层先确定自己要访问的active的位置
+            
 			count_type wordIndex = WORD_OFFSET(threadId) + (common[7] * wordNum_segment);
 			count_type wordMod = WORD_MOD(threadId);
 			uint64_t blockData_64 = bitmap[wordIndex];
 
 			
-			//if(threadId == 0) printf("segmentId = %u, wordIndex = %u\n", segmentId, wordIndex);
-
+			
 			if ((blockData_64 >> wordMod) & 1)
 			{
-				// 需要注意的是： offload_offset的基本单位word, 所以一定记得乘以64
+				
 				count_type chunkMod = threadId % vertexNum_segment;
 				vertex_id_type vertexId = segmentId * vertexNum_segment + chunkMod;
 
 				thread_data.offset_start = csr_offset[vertexId];
 				thread_data.nbrSize = csr_offset[vertexId + 1] - thread_data.offset_start;
-                //assert(thread_data.nbrSize != 0);
+               
 				thread_data.msg = vertexValue[vertexId];
 
-			}// 千万注意： 此处的 "}" 不能包住下面的代码, 否则就是：error 4 unspecified launch failure 以及 一晚上的辛苦
-
+			}
 			WarpDonate::schedule(thread_data,
 				[&](offset_type edge_cur, vertex_data_type msg)
 				{
@@ -311,7 +289,6 @@ namespace SSSP_SPACE
 
 	/****************************************************************************************************
 	 *                                    【WORKLIST_MODEL】
-	 * common[0]: worklist_count; common[1]: worklist_size; common[2]: vertexNum; common[3]: edgeNum
 	 ****************************************************************************************************/
 	__global__ void sssp_worklist_model_device(
 		offset_type* common, vertex_id_type* worklist_in, vertex_id_type* worklist_out,
@@ -366,17 +343,7 @@ namespace SSSP_SPACE
 
 
 
-	/***********************************************************
-	 * Func: GraphHybird_opt 对应的SSSP算法的 Device 实现
-	 *
-	 * [common]
-	 * [offload_offset]
-	 * [offload_data]
-	 * [csr_offset]
-	 * [csr_dest]
-	 * [csr_weight]
-	 * [vertexValue]
-	 ***********************************************************/
+
 	__global__ void sssp_hybird_device_pcie_opt(
 		offset_type* common, count_type* offload_offset, uint64_t* offload_data,
 		countl_type* csr_offset, vertex_id_type* csr_dest, edge_data_type* csr_weight, vertex_data_type* vertexValue)
@@ -385,22 +352,21 @@ namespace SSSP_SPACE
 
 		for (count_type threadId = threadIdx.x + blockIdx.x * blockDim.x; threadId < vertexNum_up; threadId += vertexNum_up)
 		{
-			offset_type wordNum_chunk = common[5];// 每个chunk拥有的word数
-			count_type vertexNum_chunk = wordNum_chunk * 64; // 每个chunk拥有的顶点数
-			count_type offset_index = threadId / vertexNum_chunk;//当前线程的偏移量所在的位置
-			count_type offset = offload_offset[offset_index];// 单前线程的偏移量;
+			offset_type wordNum_chunk = common[5];
+			count_type vertexNum_chunk = wordNum_chunk * 64; 
+			count_type offset_index = threadId / vertexNum_chunk;
+			count_type offset = offload_offset[offset_index];
 
 			WarpDonate::Thread_data_type thread_data = { 0, 0, 0 };
 			//CTA::Thread_data_type thread_data = { 0, 0, 0 };
 
-			//每个线层先确定自己要访问的active的位置
 			count_type wordIndex = WORD_OFFSET(threadId);
 			count_type wordMod = WORD_MOD(threadId);
 			uint64_t blockData_64 = offload_data[wordIndex];
 
 			if ((blockData_64 >> wordMod) & 1)
 			{
-				// 需要注意的是： offload_offset的基本单位word, 所以一定记得乘以64
+				
 				count_type chunkMod = threadId % vertexNum_chunk;
 				vertex_id_type vertexId = offset * 64 + chunkMod; //  offset * 64 + chunkMod
 
@@ -408,7 +374,7 @@ namespace SSSP_SPACE
 				thread_data.nbrSize = csr_offset[vertexId + 1] - thread_data.offset_start;
 				thread_data.msg = vertexValue[vertexId];	
 
-			}// 千万注意： 此处的 "}" 不能包住下面的代码, 否则就是：error 4 unspecified launch failure 以及 一晚上的辛苦
+			}
 
 			WarpDonate::schedule(thread_data,
 			//CTA::schedule(thread_data,
@@ -428,17 +394,7 @@ namespace SSSP_SPACE
 
 
 
-	/***********************************************************
-	 * Func: GraphHybird_opt 对应的SSSP算法的 Device
-	 *
-	 * [graphHybird_opt.common_device]
-	 * [graphHybird_opt.offload_offset_device]
-	 * [graphHybird_opt.offload_data_device]
-	 * [graphHybird_opt.csr_offset_device]
-	 * [graphHybird_opt.csr_dest_device]
-	 * [graphHybird_opt.csr_weight_device]
-	 * [graphHybird_opt.vertexValue_device]
-	 ***********************************************************/
+	
 	template<typename GraphHybird_opt>
 	void sssp_hybird_pcie_opt(GraphHybird_opt& graphHybird_opt, const count_type nBlock)
 	{
@@ -470,10 +426,7 @@ namespace WCC_SPACE
 {
 
 
-	/****************************************************************************************************
-	 *                                    【WORKLIST_MODEL】
-	 * common[0]: worklist_count; common[1]: worklist_size; common[2]: vertexNum; common[3]: edgeNum
-	 ****************************************************************************************************/
+	
 	__global__ void wcc_worklist_model_device(
 		offset_type* common, vertex_id_type* worklist_in, vertex_id_type* worklist_out,
 		countl_type* csr_offset, vertex_id_type* csr_dest, vertex_data_type* vertexValue)
@@ -481,8 +434,7 @@ namespace WCC_SPACE
 		count_type workNum_up = gridDim.x * blockDim.x;
 		for (count_type threadId = threadIdx.x + blockIdx.x * blockDim.x; threadId < workNum_up; threadId += workNum_up)
 		{
-			//CTA::Thread_data_type thread_data = { 0, 0, 0 };
-			//AllBusy::Thread_data_type thread_data = { 0, 0, 0 };
+			
 			WarpDonate::Thread_data_type thread_data = { 0, 0, 0 };
 
 			if (threadId < common[1])//worklist_size
@@ -549,10 +501,7 @@ namespace WCC_SPACE
 namespace PR_SPACE
 {
 
-	/****************************************************************************************************
-	 *                                    【WORKLIST_MODEL】
-	 * common[0]: worklist_count; common[1]: worklist_size; common[2]: vertexNum; common[3]: edgeNum
-	 ****************************************************************************************************/
+	
 	__global__ void pr_worklist_model_device(
 		offset_type* common,
 		countl_type* csr_offset, vertex_id_type* csr_dest, 
