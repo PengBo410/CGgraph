@@ -1,1 +1,1 @@
-This folder is prepared for LargeGraph.
+This folder is prepared the for LargeGraph.
