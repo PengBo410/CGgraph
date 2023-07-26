@@ -190,8 +190,6 @@ public:
 		graphName = graphName_;
 
         getPath(csrResult);
-
-
 		//Device
 		deviceId = deviceId_;
 		Msg_info("Device[%u]要处理的algorithm: (%s)", deviceId, getAlgName(algorithm).c_str());
