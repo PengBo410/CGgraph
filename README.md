@@ -10,5 +10,5 @@ Implementations of four graph analytics applications (PageRank, Weakly Connected
 In this version, You need to specify the name of the dataset you want to run (the grapg file path needs to be set in the ./CGgraph/CGgraph/Basic/Graph/graphFileList.hpp), algorithm name, and additional parameters in the ./CGgraph/CGgraph/my_project/CGgraph/main_partition.hpp file.
 
 To build:
-
+'''
 make
