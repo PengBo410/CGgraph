@@ -12,6 +12,7 @@ In this version, You need to specify the name of the dataset you want to run (th
 To build:
 ```cpp
 make
+```
 
 For example:
 ```cpp
@@ -26,3 +27,4 @@ bool RCM_LAST_ZERO_OUTDEGREE_check = true;
 Algorithm_type algorithm = Algorithm_type::SSSP;
 Engine_type  engine_type = Engine_type::COORDINATION;
 int useDeviceNum = 1;
+```
