@@ -1,9 +1,8 @@
 # CGgraph
-#CGgraph
 
 CGgraph: An Ultra-fast Graph Processing System on Modern Commodity CPU-GPU Co-processor
 
-#Quick Start
+# Quick Start
 Before building CGgraph make sure you have CUDA,TBB,CUB and C++17 installed on your system. 
 
 Implementations of four graph analytics applications (PageRank, Weakly Connected Components, Single-Source Shortest Paths, Breadth-First Search).
