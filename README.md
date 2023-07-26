@@ -12,3 +12,17 @@ In this version, You need to specify the name of the dataset you want to run (th
 To build:
 ```cpp
 make
+
+For example:
+```cpp
+std::string graphName = "twitter2010";  //graphName
+OrderMethod orderMethod = OrderMethod::NATIVE;  //orderMethod
+int64_t root = 0;                               // root
+count_type runs = 10;
+bool has_csrFile = 1;
+bool logResult = true;
+bool rootTranfer = true;
+bool RCM_LAST_ZERO_OUTDEGREE_check = true;
+Algorithm_type algorithm = Algorithm_type::SSSP;
+Engine_type  engine_type = Engine_type::COORDINATION;
+int useDeviceNum = 1;
