@@ -75,8 +75,8 @@ namespace CTA
 
 
 		//32-256 : warp
-		const int lane_id = LaneId(); )
-		int mask = __ballot_sync(0xffffffff, thread_data.nbrSize >= WARP_SIZE);/
+		const int lane_id = LaneId(); 
+		int mask = __ballot_sync(0xffffffff, thread_data.nbrSize >= WARP_SIZE);
 		while (mask != 0)
 		{
 			
